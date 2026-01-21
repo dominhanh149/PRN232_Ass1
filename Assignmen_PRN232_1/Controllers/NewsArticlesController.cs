@@ -19,24 +19,26 @@ namespace Assignmen_PRN232_1.Controllers.Api
         [HttpGet]
         public async Task<IActionResult> GetListPaging([FromQuery] NewsArticleSearchDto dto)
         {
-            var response = await _newsArticleService.GetListPagingAsync(dto);
-            return StatusCode(response.StatusCode, response);
+            var result = await _newsArticleService.GetListPagingAsync(dto);
+            return Ok(result);
         }
 
         // GET api/newsarticles/all
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
-            var response = await _newsArticleService.GetAllAsync();
-            return StatusCode(response.StatusCode, response);
+            var result = await _newsArticleService.GetAllAsync();
+            return Ok(result);
         }
 
         // GET api/newsarticles/id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var response = await _newsArticleService.GetByIdAsync(id);
-            return StatusCode(response.StatusCode, response);
+            var result = await _newsArticleService.GetByIdAsync(id);
+            if (result == null)
+                return NotFound(new { message = "News article not found" });
+            return Ok(result);
         }
 
         // POST api/newsarticles/create-or-edit
@@ -52,6 +54,22 @@ namespace Assignmen_PRN232_1.Controllers.Api
         public async Task<IActionResult> Delete(string id)
         {
             var response = await _newsArticleService.DeleteAsync(id);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        // POST api/newsarticles/{id}/tags/{tagId}
+        [HttpPost("{id}/tags/{tagId:int}")]
+        public async Task<IActionResult> AddTag(string id, int tagId)
+        {
+            var response = await _newsArticleService.AddTagAsync(id, tagId);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        // DELETE api/newsarticles/{id}/tags/{tagId}
+        [HttpDelete("{id}/tags/{tagId:int}")]
+        public async Task<IActionResult> RemoveTag(string id, int tagId)
+        {
+            var response = await _newsArticleService.RemoveTagAsync(id, tagId);
             return StatusCode(response.StatusCode, response);
         }
     }

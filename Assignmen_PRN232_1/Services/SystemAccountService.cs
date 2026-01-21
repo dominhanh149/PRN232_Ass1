@@ -23,38 +23,38 @@ namespace Assignmen_PRN232_1.Services
             _configuration = configuration;
         }
 
-        public async Task<ApiResponse<IEnumerable<SystemAccountDto>>> GetAllAsync()
+        public async Task<IEnumerable<SystemAccountDto>> GetAllAsync()
         {
             var accounts = await _systemAccountRepository.GetAllAsync();
 
             var result = accounts.Adapt<IEnumerable<SystemAccountDto>>();
 
-            return ApiResponse<IEnumerable<SystemAccountDto>>.Ok(result);
+            return result;
         }
 
-        public async Task<ApiResponse<PagingResponse<SystemAccountDto>>> GetListPagingAsync(SystemAccountSearchDto dto)
+        public async Task<PagingResponse<SystemAccountDto>> GetListPagingAsync(SystemAccountSearchDto dto)
         {
             var pagedData = await _systemAccountRepository.GetListPagingAsync(dto);
 
-            return ApiResponse<PagingResponse<SystemAccountDto>>.Ok(new PagingResponse<SystemAccountDto>
+            return new PagingResponse<SystemAccountDto>
             {
                 PageIndex = pagedData.PageIndex,
                 PageSize = pagedData.PageSize,
                 TotalRecords = pagedData.TotalRecords,
                 Items = pagedData.Items.Adapt<IEnumerable<SystemAccountDto>>()
-            });
+            };
         }
 
-        public async Task<ApiResponse<SystemAccountDto>> GetByIdAsync(short id)
+        public async Task<SystemAccountDto?> GetByIdAsync(short id)
         {
             var account = await _systemAccountRepository.GetByIdAsync(id);
             if (account == null)
-                return ApiResponse<SystemAccountDto>.Fail("Account not found");
+                return null;
 
             var dto = account.Adapt<SystemAccountDto>();
             dto.AccountRoleName = GetRoleName(account.AccountRole);
 
-            return ApiResponse<SystemAccountDto>.Ok(dto);
+            return dto;
         }
 
         /// <summary>

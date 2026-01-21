@@ -1,0 +1,320 @@
+﻿@using System.Linq
+@using Assignmen_PRN232__.Dto
+@model Assignmen_PRN232_1.DTOs.Common.PagingResponse<TagDto>
+
+@{
+    ViewData["Title"] = "Tag Management";
+    var currentPage = ViewBag.CurrentPage ?? 1;
+    var pageSize = ViewBag.PageSize ?? 10;
+    var keyword = ViewBag.Keyword ?? "";
+    var totalPages = ViewBag.TotalPages ?? 1;
+    var totalRecords = ViewBag.TotalRecords ?? 0;
+}
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2><i class="bi bi-tags"></i> Tag Management</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createEditModal" 
+                    onclick="openCreateForm()">
+                <i class="bi bi-plus-circle"></i> Create New Tag
+            </button>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    <div id="alertContainer"></div>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Search Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Search</label>
+                    <input type="text" name="keyword" value="@keyword" class="form-control" placeholder="Search by tag name...">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Page Size</label>
+                    <select name="pageSize" class="form-select">
+                        <option value="5" selected="@(pageSize == 5)">5</option>
+                        <option value="10" selected="@(pageSize == 10)">10</option>
+                        <option value="20" selected="@(pageSize == 20)">20</option>
+                        <option value="50" selected="@(pageSize == 50)">50</option>
+                    </select>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Tag List (@totalRecords records)</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model?.Items != null && Model.Items.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 10%">ID</th>
+                                <th style="width: 25%">Tag Name</th>
+                                <th style="width: 40%">Note</th>
+                                <th style="width: 25%" class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>@item.TagId</td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">@(item.TagName ?? "N/A")</span>
+                                    </td>
+                                    <td>@(item.Note ?? "")</td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-warning" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#createEditModal"
+                                                    onclick="openEditForm(@item.TagId)" 
+                                                    title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" 
+                                                    onclick="confirmDelete(@item.TagId, '@(item.TagName ?? "this tag")')" 
+                                                    title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="text-muted mt-3">No tags found</p>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createEditModal"
+                            onclick="openCreateForm()">
+                        Create First Tag
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <!-- Previous Button -->
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" 
+                       asp-action="Index" 
+                       asp-route-pageIndex="@(currentPage - 1)" 
+                       asp-route-pageSize="@pageSize" 
+                       asp-route-keyword="@keyword">
+                        <i class="bi bi-chevron-left"></i> Previous
+                    </a>
+                </li>
+
+                <!-- Page Numbers -->
+                @{
+                    int startPage = Math.Max(1, currentPage - 2);
+                    int endPage = Math.Min(totalPages, currentPage + 2);
+
+                    if (startPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" 
+                               asp-action="Index" 
+                               asp-route-pageIndex="1" 
+                               asp-route-pageSize="@pageSize" 
+                               asp-route-keyword="@keyword">1</a>
+                        </li>
+                        if (startPage > 2)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                    }
+
+                    for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" 
+                               asp-action="Index" 
+                               asp-route-pageIndex="@i" 
+                               asp-route-pageSize="@pageSize" 
+                               asp-route-keyword="@keyword">@i</a>
+                        </li>
+                    }
+
+                    if (endPage < totalPages)
+                    {
+                        if (endPage < totalPages - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                        <li class="page-item">
+                            <a class="page-link" 
+                               asp-action="Index" 
+                               asp-route-pageIndex="@totalPages" 
+                               asp-route-pageSize="@pageSize" 
+                               asp-route-keyword="@keyword">@totalPages</a>
+                        </li>
+                    }
+                }
+
+                <!-- Next Button -->
+                <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                    <a class="page-link" 
+                       asp-action="Index" 
+                       asp-route-pageIndex="@(currentPage + 1)" 
+                       asp-route-pageSize="@pageSize" 
+                       asp-route-keyword="@keyword">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Pagination Info -->
+        <div class="text-center text-muted">
+            Showing @((currentPage - 1) * pageSize + 1) to @Math.Min(currentPage * pageSize, totalRecords) of @totalRecords entries
+        </div>
+    }
+</div>
+
+<!-- Create/Edit Modal -->
+<div class="modal fade" id="createEditModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Create Tag</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div id="modalBody">
+                <div class="modal-body text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Open Create Form
+        function openCreateForm() {
+            $('#modalBody').html(`
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            `);
+            $('#modalTitle').text('Create New Tag');
+
+            $.get('@Url.Action("GetCreateEditForm", "Tag")', function(data) {
+                $('#modalBody').html(data);
+            }).fail(function() {
+                showAlert('Error loading form', 'danger');
+            });
+        }
+
+        // Open Edit Form
+        function openEditForm(id) {
+            $('#modalBody').html(`
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            `);
+            $('#modalTitle').text('Edit Tag');
+
+            $.get('@Url.Action("GetCreateEditForm", "Tag")', { id: id }, function(data) {
+                $('#modalBody').html(data);
+            }).fail(function() {
+                showAlert('Error loading form', 'danger');
+            });
+        }
+
+        // Save Tag (Create/Edit)
+        function saveTag(e) {
+            e.preventDefault();
+            
+            const form = document.getElementById('tagForm');
+            const formData = new FormData(form);
+
+            $.post('@Url.Action("SaveTag", "Tag")', formData, function(response) {
+                showAlert(response.message || 'Saved successfully', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('createEditModal')).hide();
+                setTimeout(() => location.reload(), 1000);
+            })
+            .fail(function(xhr) {
+                const msg = xhr.responseJSON?.message || 'Error saving';
+                showAlert(msg, 'danger');
+            });
+        }
+
+        // Delete Tag
+        function confirmDelete(id, tagName) {
+            if (confirm(`Delete "${tagName}"?`)) {
+                $.post('@Url.Action("DeleteTag", "Tag")', { id: id }, function(response) {
+                    showAlert(response.message || 'Deleted successfully', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                })
+                .fail(function(xhr) {
+                    showAlert(xhr.responseJSON?.message || 'Error deleting', 'danger');
+                });
+            }
+        }
+
+        // Show Alert
+        function showAlert(message, type) {
+            const icon = type === 'success' ? 'check-circle' : 'exclamation-triangle';
+            $('#alertContainer').html(`
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    <i class="bi bi-${icon}"></i> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `);
+            window.scrollTo(0, 0);
+        }
+    </script>
+}

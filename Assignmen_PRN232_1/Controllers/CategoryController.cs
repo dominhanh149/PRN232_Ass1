@@ -19,24 +19,26 @@ namespace Assignmen_PRN232_1.Controllers.Api
         [HttpGet]
         public async Task<IActionResult> GetListPaging([FromQuery] CategorySearchDto dto)
         {
-            var response = await _categoryService.GetListPagingAsync(dto);
-            return StatusCode(response.StatusCode, response);
+            var result = await _categoryService.GetListPagingAsync(dto);
+            return Ok(result);
         }
 
         // GET api/categories/all
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
-            var response = await _categoryService.GetAllAsync();
-            return StatusCode(response.StatusCode, response);
+            var result = await _categoryService.GetAllAsync();
+            return Ok(result);
         }
 
         // GET api/categories/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(short id)
         {
-            var response = await _categoryService.GetByIdAsync(id);
-            return StatusCode(response.StatusCode, response);
+            var result = await _categoryService.GetByIdAsync(id);
+            if (result == null)
+                return NotFound(new { message = "Category not found" });
+            return Ok(result);
         }
 
         // POST api/categories/create-or-edit

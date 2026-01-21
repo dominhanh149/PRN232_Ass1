@@ -6,11 +6,14 @@ namespace Assignmen_PRN232_1.Services.IServices
 {
     public interface INewsArticleService
     {
-        Task<ApiResponse<PagingResponse<NewsArticleDto>>> GetListPagingAsync(NewsArticleSearchDto dto);
-        Task<ApiResponse<IEnumerable<NewsArticleDto>>> GetAllAsync();
-        Task<ApiResponse<NewsArticleDto>> GetByIdAsync(string id);
+        Task<PagingResponse<NewsArticleDto>> GetListPagingAsync(NewsArticleSearchDto dto);
+        Task<IEnumerable<NewsArticleDto>> GetAllAsync();
+        Task<NewsArticleDto?> GetByIdAsync(string id);
 
         Task<ApiResponse<NewsArticleDto>> CreateOrEditAsync(NewsArticleSaveDto dto);
         Task<ApiResponse<bool>> DeleteAsync(string id);
+
+        Task<ApiResponse<bool>> AddTagAsync(string newsArticleId, int tagId);
+        Task<ApiResponse<bool>> RemoveTagAsync(string newsArticleId, int tagId);
     }
 }

@@ -17,36 +17,36 @@ namespace Assignmen_PRN232_1.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<ApiResponse<IEnumerable<CategoryDto>>> GetAllAsync()
+        public async Task<IEnumerable<CategoryDto>> GetAllAsync()
         {
             var categories = await _categoryRepository.GetAllAsync();
 
             // Entity -> DTO
             var result = categories.Adapt<IEnumerable<CategoryDto>>();
 
-            return ApiResponse<IEnumerable<CategoryDto>>.Ok(result);
+            return result;
         }
 
-        public async Task<ApiResponse<PagingResponse<CategoryDto>>> GetListPagingAsync(CategorySearchDto dto)
+        public async Task<PagingResponse<CategoryDto>> GetListPagingAsync(CategorySearchDto dto)
         {
             var pagedData = await _categoryRepository.GetListPagingAsync(dto);
 
-            return ApiResponse<PagingResponse<CategoryDto>>.Ok(new PagingResponse<CategoryDto>
+            return new PagingResponse<CategoryDto>
             {
                 PageIndex = pagedData.PageIndex,
                 PageSize = pagedData.PageSize,
                 TotalRecords = pagedData.TotalRecords,
                 Items = pagedData.Items.Adapt<IEnumerable<CategoryDto>>()
-            });
+            };
         }
 
-        public async Task<ApiResponse<CategoryDto>> GetByIdAsync(short id)
+        public async Task<CategoryDto?> GetByIdAsync(short id)
         {
             var category = await _categoryRepository.GetByIdAsync<short>(id);
             if (category == null)
-                return ApiResponse<CategoryDto>.Fail("Category not found");
+                return null;
 
-            return ApiResponse<CategoryDto>.Ok(category.Adapt<CategoryDto>());
+            return category.Adapt<CategoryDto>();
         }
 
         /// <summary>

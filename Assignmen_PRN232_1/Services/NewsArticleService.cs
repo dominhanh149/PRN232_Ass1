@@ -17,36 +17,73 @@ namespace Assignmen_PRN232_1.Services
             _newsArticleRepository = newsArticleRepository;
         }
 
-        public async Task<ApiResponse<IEnumerable<NewsArticleDto>>> GetAllAsync()
+        public async Task<IEnumerable<NewsArticleDto>> GetAllAsync()
         {
             var newsArticles = await _newsArticleRepository.GetAllAsync();
 
             // Entity -> DTO
             var result = newsArticles.Adapt<IEnumerable<NewsArticleDto>>();
 
-            return ApiResponse<IEnumerable<NewsArticleDto>>.Ok(result);
+            return result;
         }
 
-        public async Task<ApiResponse<PagingResponse<NewsArticleDto>>> GetListPagingAsync(NewsArticleSearchDto dto)
+        public async Task<PagingResponse<NewsArticleDto>> GetListPagingAsync(NewsArticleSearchDto dto)
         {
             var pagedData = await _newsArticleRepository.GetListPagingAsync(dto);
 
-            return ApiResponse<PagingResponse<NewsArticleDto>>.Ok(new PagingResponse<NewsArticleDto>
+            // Eager load Tags cho mỗi NewsArticle
+            var items = pagedData.Items.Select(na => new NewsArticleDto
+            {
+                NewsArticleId = na.NewsArticleId,
+                NewsArticleName = na.NewsArticleId,
+                NewsTitle = na.NewsTitle,
+                Headline = na.Headline,
+                CreatedDate = na.CreatedDate,
+                NewsContent = na.NewsContent,
+                NewsSource = na.NewsSource,
+                CategoryId = na.CategoryId,
+                CategoryName = na.Category?.CategoryName,
+                NewsStatus = na.NewsStatus,
+                CreatedById = na.CreatedById,
+                UpdatedById = na.UpdatedById,
+                ModifiedDate = na.ModifiedDate,
+                Tags = na.Tags.Adapt<ICollection<TagDto>>()
+            }).ToList();
+
+            return new PagingResponse<NewsArticleDto>
             {
                 PageIndex = pagedData.PageIndex,
                 PageSize = pagedData.PageSize,
                 TotalRecords = pagedData.TotalRecords,
-                Items = pagedData.Items.Adapt<IEnumerable<NewsArticleDto>>()
-            });
+                Items = items
+            };
         }
 
-        public async Task<ApiResponse<NewsArticleDto>> GetByIdAsync(string id)
+        public async Task<NewsArticleDto?> GetByIdAsync(string id)
         {
             var newsArticle = await _newsArticleRepository.GetByIdAsync(id);
             if (newsArticle == null)
-                return ApiResponse<NewsArticleDto>.Fail("News article not found");
+                return null;
 
-            return ApiResponse<NewsArticleDto>.Ok(newsArticle.Adapt<NewsArticleDto>());
+            var dto = new NewsArticleDto
+            {
+                NewsArticleId = newsArticle.NewsArticleId,
+                NewsArticleName = newsArticle.NewsArticleId,
+                NewsTitle = newsArticle.NewsTitle,
+                Headline = newsArticle.Headline,
+                CreatedDate = newsArticle.CreatedDate,
+                NewsContent = newsArticle.NewsContent,
+                NewsSource = newsArticle.NewsSource,
+                CategoryId = newsArticle.CategoryId,
+                CategoryName = newsArticle.Category?.CategoryName,
+                NewsStatus = newsArticle.NewsStatus,
+                CreatedById = newsArticle.CreatedById,
+                UpdatedById = newsArticle.UpdatedById,
+                ModifiedDate = newsArticle.ModifiedDate,
+                Tags = newsArticle.Tags.Adapt<ICollection<TagDto>>()
+            };
+
+            return dto;
         }
 
         /// <summary>
@@ -119,6 +156,46 @@ namespace Assignmen_PRN232_1.Services
             await _newsArticleRepository.SaveChangesAsync();
 
             return ApiResponse<bool>.Ok(true, "Deleted successfully");
+        }
+
+        public async Task<ApiResponse<bool>> AddTagAsync(string newsArticleId, int tagId)
+        {
+            // Kiểm tra NewsArticle tồn tại
+            var newsArticle = await _newsArticleRepository.GetByIdAsync(newsArticleId);
+            if (newsArticle == null)
+                return ApiResponse<bool>.Fail("News article not found");
+
+            // Kiểm tra tag đã được thêm chưa
+            if (newsArticle.Tags.Any(x => x.TagId == tagId))
+                return ApiResponse<bool>.Fail("Tag already added to this article");
+
+            // Tạo tag object để thêm vào relationship
+            var tag = new Tag { TagId = tagId };
+            newsArticle.Tags.Add(tag);
+
+            await _newsArticleRepository.UpdateAsync(newsArticle);
+            await _newsArticleRepository.SaveChangesAsync();
+            return ApiResponse<bool>.Ok(true, "Tag added successfully");
+        }
+
+        public async Task<ApiResponse<bool>> RemoveTagAsync(string newsArticleId, int tagId)
+        {
+            // Kiểm tra NewsArticle tồn tại
+            var newsArticle = await _newsArticleRepository.GetByIdAsync(newsArticleId);
+            if (newsArticle == null)
+                return ApiResponse<bool>.Fail("News article not found");
+
+            // Kiểm tra tag có trong article không
+            var tagToRemove = newsArticle.Tags.FirstOrDefault(x => x.TagId == tagId);
+            if (tagToRemove == null)
+                return ApiResponse<bool>.Fail("Tag not found in this article");
+
+            // Xóa tag
+            newsArticle.Tags.Remove(tagToRemove);
+
+            await _newsArticleRepository.UpdateAsync(newsArticle);
+            await _newsArticleRepository.SaveChangesAsync();
+            return ApiResponse<bool>.Ok(true, "Tag removed successfully");
         }
     }
 }

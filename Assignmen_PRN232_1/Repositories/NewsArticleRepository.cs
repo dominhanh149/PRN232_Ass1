@@ -17,7 +17,10 @@ namespace Assignmen_PRN232__.Repositories
 
         public async Task<PagingResponse<NewsArticle>> GetListPagingAsync(NewsArticleSearchDto searchDto)
         {
-            var query = FindAll();
+            // Use AsNoTracking vì đây là read-only operation
+            var query = _dbContext.Set<NewsArticle>()
+                .Include(x => x.Tags)
+                .AsNoTracking();
 
             // 🔍 Search theo Keyword
             if (!string.IsNullOrWhiteSpace(searchDto.Keyword))
@@ -64,7 +67,12 @@ namespace Assignmen_PRN232__.Repositories
             return await ExistsAsync(x => x.NewsArticleId == newsArticleId);
         }
 
-        // Explicit implementation cho string GetById
-        public Task<NewsArticle?> GetByIdAsync(string id) => GetByIdAsync<string>(id);
+        // Explicit implementation cho string GetById - Include Tags with Change Tracking
+        public async Task<NewsArticle?> GetByIdAsync(string id)
+        {
+            return await _dbContext.Set<NewsArticle>()
+                .Include(x => x.Tags)
+                .FirstOrDefaultAsync(x => x.NewsArticleId == id);
+        }
     }
 }

@@ -6,9 +6,9 @@ namespace Assignmen_PRN232_1.Services.IServices
 {
     public interface ICategoryService
     {
-        Task<ApiResponse<PagingResponse<CategoryDto>>> GetListPagingAsync(CategorySearchDto dto);
-        Task<ApiResponse<IEnumerable<CategoryDto>>> GetAllAsync();
-        Task<ApiResponse<CategoryDto>> GetByIdAsync(short id);
+        Task<PagingResponse<CategoryDto>> GetListPagingAsync(CategorySearchDto dto);
+        Task<IEnumerable<CategoryDto>> GetAllAsync();
+        Task<CategoryDto?> GetByIdAsync(short id);
 
         Task<ApiResponse<CategoryDto>> CreateOrEditAsync(CategorySaveDto dto);
         Task<ApiResponse<bool>> DeleteAsync(short id);

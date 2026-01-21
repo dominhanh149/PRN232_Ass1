@@ -1,5 +1,6 @@
 ﻿using Assignmen_PRN232_1.Services.IServices;
 using Assignmen_PRN232__.Dto;
+using Assignmen_PRN232__.Dto.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Assignmen_PRN232_1.Controllers.Api
@@ -19,16 +20,18 @@ namespace Assignmen_PRN232_1.Controllers.Api
         [HttpGet]
         public async Task<IActionResult> GetListPaging([FromQuery] TagSearchDto dto)
         {
-            var response = await _tagService.GetListPagingAsync(dto);
-            return StatusCode(response.StatusCode, response);
+            var result = await _tagService.GetListPagingAsync(dto);
+            return Ok(ApiResponse<object>.Ok(result, "Get list successfully"));
         }
 
         // GET api/tags/5
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var response = await _tagService.GetByIdAsync(id);
-            return StatusCode(response.StatusCode, response);
+            var result = await _tagService.GetByIdAsync(id);
+            if (result == null)
+                return NotFound(ApiResponse<object>.Fail("Tag not found", StatusCodes.Status404NotFound));
+            return Ok(ApiResponse<TagDto>.Ok(result, "Get tag successfully"));
         }
 
         // POST api/tags/create-or-edit

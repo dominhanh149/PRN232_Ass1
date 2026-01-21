@@ -19,24 +19,26 @@ namespace Assignmen_PRN232_1.Controllers.Api
         [HttpGet]
         public async Task<IActionResult> GetListPaging([FromQuery] SystemAccountSearchDto dto)
         {
-            var response = await _systemAccountService.GetListPagingAsync(dto);
-            return StatusCode(response.StatusCode, response);
+            var result = await _systemAccountService.GetListPagingAsync(dto);
+            return Ok(result);
         }
 
         // GET api/systemaccounts/all
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
-            var response = await _systemAccountService.GetAllAsync();
-            return StatusCode(response.StatusCode, response);
+            var result = await _systemAccountService.GetAllAsync();
+            return Ok(result);
         }
 
         // GET api/systemaccounts/5
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(short id)
         {
-            var response = await _systemAccountService.GetByIdAsync(id);
-            return StatusCode(response.StatusCode, response);
+            var result = await _systemAccountService.GetByIdAsync(id);
+            if (result == null)
+                return NotFound(new { message = "Account not found" });
+            return Ok(result);
         }
 
         // POST api/systemaccounts/create-or-edit

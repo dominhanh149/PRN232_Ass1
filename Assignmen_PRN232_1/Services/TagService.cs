@@ -17,36 +17,36 @@ namespace Assignmen_PRN232_1.Services
             _tagRepository = tagRepository;
         }
 
-        public async Task<ApiResponse<IEnumerable<TagDto>>> GetAllAsync()
+        public async Task<IEnumerable<TagDto>> GetAllAsync()
         {
             var tags = await _tagRepository.GetAllAsync();
 
             // Entity -> DTO
             var result = tags.Adapt<IEnumerable<TagDto>>();
 
-            return ApiResponse<IEnumerable<TagDto>>.Ok(result);
+            return result;
         }
 
-        public async Task<ApiResponse<PagingResponse<TagDto>>> GetListPagingAsync(TagSearchDto dto)
+        public async Task<PagingResponse<TagDto>> GetListPagingAsync(TagSearchDto dto)
         {
             var pagedData = await _tagRepository.GetListPagingAsync(dto);
 
-            return ApiResponse<PagingResponse<TagDto>>.Ok(new PagingResponse<TagDto>
+            return new PagingResponse<TagDto>
             {
                 PageIndex = pagedData.PageIndex,
                 PageSize = pagedData.PageSize,
                 TotalRecords = pagedData.TotalRecords,
                 Items = pagedData.Items.Adapt<IEnumerable<TagDto>>()
-            });
+            };
         }
 
-        public async Task<ApiResponse<TagDto>> GetByIdAsync(int id)
+        public async Task<TagDto?> GetByIdAsync(int id)
         {
             var tag = await _tagRepository.GetByIdAsync(id);
             if (tag == null)
-                return ApiResponse<TagDto>.Fail("Tag not found");
+                return null;
 
-            return ApiResponse<TagDto>.Ok(tag.Adapt<TagDto>());
+            return tag.Adapt<TagDto>();
         }
 
         /// <summary>
