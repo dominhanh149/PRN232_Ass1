@@ -45,3 +45,4 @@ publish/
 
 # EF Core Migrations (optional, include if you want to version migrations)
 # Migrations/
+/Assignmen_PRN232_1/appsettings.json
