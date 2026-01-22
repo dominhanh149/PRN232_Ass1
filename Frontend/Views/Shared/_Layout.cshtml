@@ -27,24 +27,47 @@
                 </a>
                 <hr class="sidebar-divider my-2">
                 
-                <div class="sidebar-subtitle">Management</div>
-                <a href="/Tag" class="nav-link">
-                    <i class="bi bi-tags"></i> Tags
-                </a>
-                <a href="/Category" class="nav-link">
-                    <i class="bi bi-list"></i> Categories
-                </a>
-                <a href="/NewsArticle" class="nav-link">
-                    <i class="bi bi-newspaper"></i> News Articles
-                </a>
-                <a href="/SystemAccount" class="nav-link">
-                    <i class="bi bi-people"></i> System Accounts
-                </a>
-                
-                <hr class="sidebar-divider my-2">
-                <a href="/Login" class="nav-link">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
+                @{
+                    var isLoggedIn = Context.Request.Cookies.ContainsKey("IsAuthenticated") && Context.Request.Cookies["IsAuthenticated"] == "true";
+                    var userName = isLoggedIn ? Context.Request.Cookies["UserName"] : null;
+                    var userEmail = isLoggedIn ? Context.Request.Cookies["UserEmail"] : null;
+                }
+
+                @if (isLoggedIn)
+                {
+                    <div class="sidebar-subtitle">Management</div>
+                    <a href="/Tag" class="nav-link">
+                        <i class="bi bi-tags"></i> Tags
+                    </a>
+                    <a href="/Category" class="nav-link">
+                        <i class="bi bi-list"></i> Categories
+                    </a>
+                    <a href="/NewsArticle" class="nav-link">
+                        <i class="bi bi-newspaper"></i> News Articles
+                    </a>
+                    <a href="/SystemAccount" class="nav-link">
+                        <i class="bi bi-people"></i> System Accounts
+                    </a>
+                    
+                    <hr class="sidebar-divider my-2">
+                    <div class="sidebar-user-info">
+                        <div class="user-name">
+                            <i class="bi bi-person-circle"></i> @userName
+                        </div>
+                        <div class="user-email">
+                            <i class="bi bi-envelope"></i> @userEmail
+                        </div>
+                    </div>
+                    <a href="/Login/Logout" class="nav-link text-danger">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                }
+                else
+                {
+                    <a href="/Login" class="nav-link btn btn-primary w-100">
+                        <i class="bi bi-box-arrow-in-right"></i> Login
+                    </a>
+                }
             </nav>
         </aside>
 

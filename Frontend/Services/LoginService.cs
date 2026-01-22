@@ -45,10 +45,23 @@ namespace Frontend.Services
                     return (false, apiResponse?.Message ?? "Login failed", null);
                 }
 
-                // Save account info to session
-                _httpContextAccessor.HttpContext?.Session.SetString("UserName", apiResponse.Data?.AccountName ?? "");
-                _httpContextAccessor.HttpContext?.Session.SetString("UserEmail", apiResponse.Data?.AccountEmail ?? "");
-                _httpContextAccessor.HttpContext?.Session.SetString("UserRole", apiResponse.Data?.AccountRole.ToString() ?? "");
+                // Save account info to cookies
+                var httpContext = _httpContextAccessor.HttpContext;
+                if (httpContext != null)
+                {
+                    var cookieOptions = new Microsoft.AspNetCore.Http.CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax,
+                        Expires = DateTimeOffset.UtcNow.AddDays(7)
+                    };
+
+                    httpContext.Response.Cookies.Append("UserName", apiResponse.Data?.AccountName ?? "", cookieOptions);
+                    httpContext.Response.Cookies.Append("UserEmail", apiResponse.Data?.AccountEmail ?? "", cookieOptions);
+                    httpContext.Response.Cookies.Append("UserRole", apiResponse.Data?.AccountRole.ToString() ?? "", cookieOptions);
+                    httpContext.Response.Cookies.Append("IsAuthenticated", "true", cookieOptions);
+                }
 
                 return (true, apiResponse.Message ?? "Login successful", null);
             }
@@ -64,9 +77,14 @@ namespace Frontend.Services
         {
             try
             {
-                _httpContextAccessor.HttpContext?.Session.Remove("UserName");
-                _httpContextAccessor.HttpContext?.Session.Remove("UserEmail");
-                _httpContextAccessor.HttpContext?.Session.Remove("UserRole");
+                var httpContext = _httpContextAccessor.HttpContext;
+                if (httpContext != null)
+                {
+                    httpContext.Response.Cookies.Delete("UserName");
+                    httpContext.Response.Cookies.Delete("UserEmail");
+                    httpContext.Response.Cookies.Delete("UserRole");
+                    httpContext.Response.Cookies.Delete("IsAuthenticated");
+                }
                 await Task.CompletedTask;
             }
             catch (Exception ex)

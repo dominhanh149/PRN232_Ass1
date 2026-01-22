@@ -33,6 +33,14 @@ namespace Frontend.Controllers
 
             if (result.Success)
             {
+                // Ensure session is committed before redirect
+                HttpContext.Session.CommitAsync();
+                
+                // Debug: Check session values
+                Console.WriteLine($"Session UserName: {HttpContext.Session.GetString("UserName")}");
+                Console.WriteLine($"Session UserEmail: {HttpContext.Session.GetString("UserEmail")}");
+                Console.WriteLine($"Session UserRole: {HttpContext.Session.GetString("UserRole")}");
+                
                 TempData["SuccessMessage"] = result.Message;
                 return RedirectToAction("Index", "Home");
             }
