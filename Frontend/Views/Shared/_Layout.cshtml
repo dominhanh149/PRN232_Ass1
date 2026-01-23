@@ -23,7 +23,7 @@
 
             <nav class="sidebar-nav">
                 <a href="/PublicNews" class="nav-link">
-                    <i class="bi bi-newspaper"></i> Public News
+                    Public News
                 </a>
                 <hr class="sidebar-divider my-2">
                 
@@ -41,43 +41,46 @@
                     @if (userRole == "Admin")
                     {
                         <a href="/SystemAccount" class="nav-link">
-                            <i class="bi bi-people"></i> System Accounts
+                            System Accounts
                         </a>
                         <a href="/NewsArticle" class="nav-link">
-                            <i class="bi bi-newspaper"></i> News Articles
+                            News Articles
                         </a>
                         <a href="/Report" class="nav-link">
-                            <i class="bi bi-bar-chart-line"></i> Reports
+                            Reports
                         </a>
                     }
                     
                     @if (userRole == "Staff")
                     {
+                        <a href="/NewsArticle" class="nav-link">
+                            News Articles
+                        </a>
                         <a href="/Category" class="nav-link">
-                            <i class="bi bi-list"></i> Categories
+                            Categories
                         </a>
                         <a href="/Tag" class="nav-link">
-                            <i class="bi bi-tags"></i> Tags
+                            Tags
                         </a>
                     }
                     
                     <hr class="sidebar-divider my-2">
                     <div class="sidebar-user-info">
                         <div class="user-name">
-                            <i class="bi bi-person-circle"></i> @userName
+                            @userName
                         </div>
                         <div class="user-email">
-                            <i class="bi bi-envelope"></i> @userEmail
+                            @userEmail
                         </div>
                     </div>
                     <a href="/Login/Logout" class="nav-link text-danger">
-                        <i class="bi bi-box-arrow-right"></i> Logout
+                        Logout
                     </a>
                 }
                 else
                 {
                     <a href="/Login" class="nav-link btn btn-primary w-100">
-                        <i class="bi bi-box-arrow-in-right"></i> Login
+                        Login
                     </a>
                 }
             </nav>

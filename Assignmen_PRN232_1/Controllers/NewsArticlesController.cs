@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Assignmen_PRN232_1.Controllers.Api
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Staff")]
     [ApiController]
     [Route("api/[controller]")]
     public class NewsArticlesController : ControllerBase
