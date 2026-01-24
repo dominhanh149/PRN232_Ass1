@@ -24,8 +24,8 @@
         <select class="form-select" id="accountRole" name="AccountRole" required>
             <option value="">-- Select Role --</option>
             <option value="0" selected="@(Model.AccountRole == 0)">Admin</option>
-            <option value="1" selected="@(Model.AccountRole == 1)">Moderator</option>
-            <option value="2" selected="@(Model.AccountRole == 2)">User</option>
+            <option value="1" selected="@(Model.AccountRole == 1)">Staff</option>
+            <option value="2" selected="@(Model.AccountRole == 2)">Lecturer</option>
         </select>
         <span asp-validation-for="AccountRole" class="text-danger"></span>
     </div>

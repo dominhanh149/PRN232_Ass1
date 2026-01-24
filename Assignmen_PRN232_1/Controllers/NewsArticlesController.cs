@@ -11,10 +11,12 @@ namespace Assignmen_PRN232_1.Controllers.Api
     public class NewsArticlesController : ControllerBase
     {
         private readonly INewsArticleService _newsArticleService;
+        private readonly ITagService _tagService;
 
-        public NewsArticlesController(INewsArticleService newsArticleService)
+        public NewsArticlesController(INewsArticleService newsArticleService, ITagService tagService)
         {
             _newsArticleService = newsArticleService;
+            _tagService = tagService;
         }
 
         // GET api/newsarticles
@@ -90,6 +92,14 @@ namespace Assignmen_PRN232_1.Controllers.Api
         {
             var response = await _newsArticleService.RemoveTagAsync(id, tagId);
             return StatusCode(response.StatusCode, response);
+        }
+
+        // GET api/newsarticles/tags/all
+        [HttpGet("tags/all")]
+        public async Task<IActionResult> GetAllTags()
+        {
+            var result = await _tagService.GetAllAsync();
+            return Ok(result);
         }
     }
 }

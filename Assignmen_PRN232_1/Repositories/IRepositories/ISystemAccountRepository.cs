@@ -15,6 +15,7 @@ namespace Assignmen_PRN232__.Repositories.IRepositories
         Task UpdateAsync(SystemAccount account);
         Task DeleteAsync(SystemAccount account);
         Task<bool> ExistsByEmailAsync(string email);
+        Task<bool> ExistsByEmailAsync(string email, short excludeAccountId);
         Task<int> SaveChangesAsync();
     }
 }

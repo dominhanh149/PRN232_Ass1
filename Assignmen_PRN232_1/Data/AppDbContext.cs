@@ -22,6 +22,11 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<SystemAccount> SystemAccounts { get; set; }
 
     public virtual DbSet<Tag> Tags { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=Manh\\SQLEXPRESS;uid=sa;password=123;database=FUNewsManagement;Encrypt=True;TrustServerCertificate=True");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
@@ -93,7 +98,9 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("SystemAccount");
 
-            entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.AccountId)
+                .ValueGeneratedNever()
+                .HasColumnName("AccountID");
             entity.Property(e => e.AccountEmail).HasMaxLength(70);
             entity.Property(e => e.AccountName).HasMaxLength(100);
             entity.Property(e => e.AccountPassword).HasMaxLength(70);
@@ -105,7 +112,9 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("Tag");
 
-            entity.Property(e => e.TagId).HasColumnName("TagID");
+            entity.Property(e => e.TagId)
+                .ValueGeneratedNever()
+                .HasColumnName("TagID");
             entity.Property(e => e.Note).HasMaxLength(400);
             entity.Property(e => e.TagName).HasMaxLength(50);
         });
@@ -115,3 +124,4 @@ public partial class AppDbContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+

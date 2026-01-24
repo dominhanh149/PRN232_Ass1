@@ -62,6 +62,11 @@ namespace Assignmen_PRN232__.Repositories
             return await ExistsAsync(x => x.AccountEmail == email);
         }
 
+        public async Task<bool> ExistsByEmailAsync(string email, short excludeAccountId)
+        {
+            return await ExistsAsync(x => x.AccountEmail == email && x.AccountId != excludeAccountId);
+        }
+
         // Explicit implementation cho short GetById
         public Task<SystemAccount?> GetByIdAsync(short id) => GetByIdAsync<short>(id);
     }

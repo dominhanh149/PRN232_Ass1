@@ -14,6 +14,7 @@ namespace Assignmen_PRN232__.Repositories.IRepositories
         Task UpdateAsync(Tag tag);
         Task DeleteAsync(Tag tag);
         Task<bool> ExistsByNameAsync(string tagName);
+        Task<bool> ExistsByNameAsync(string tagName, int excludeTagId);
         Task<int> SaveChangesAsync();
     }
 

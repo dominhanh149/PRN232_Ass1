@@ -69,6 +69,10 @@ namespace Assignmen_PRN232_1.Services
                 return ApiResponse<TagDto>.Fail("Tag name already exists");
 
             var entity = dto.Adapt<Tag>();
+            
+            // Tạo ID tuần tự
+            var maxId = (await _tagRepository.GetAllAsync()).MaxBy(x => x.TagId)?.TagId ?? 0;
+            entity.TagId = maxId + 1;
 
             await _tagRepository.AddAsync(entity);
             await _tagRepository.SaveChangesAsync();
@@ -86,8 +90,8 @@ namespace Assignmen_PRN232_1.Services
                 return ApiResponse<TagDto>.Fail("Tag not found");
 
             // Kiểm tra trùng TagName (trừ chính nó)
-            var duplicateExists = await _tagRepository.ExistsByNameAsync(dto.TagName!);
-            if (duplicateExists && existing.TagName != dto.TagName)
+            var duplicateExists = await _tagRepository.ExistsByNameAsync(dto.TagName!, dto.TagId);
+            if (duplicateExists)
                 return ApiResponse<TagDto>.Fail("Tag name already exists");
 
             dto.Adapt(existing);

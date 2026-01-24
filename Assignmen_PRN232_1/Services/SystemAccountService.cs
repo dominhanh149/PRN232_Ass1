@@ -118,6 +118,10 @@ namespace Assignmen_PRN232_1.Services
 
             // DTO -> Entity
             var entity = dto.Adapt<SystemAccount>();
+            
+            // Tạo ID tuần tự
+            var maxId = (await _systemAccountRepository.GetAllAsync()).MaxBy(x => x.AccountId)?.AccountId ?? 0;
+            entity.AccountId = (short)(maxId + 1);
 
             await _systemAccountRepository.AddAsync(entity);
             await _systemAccountRepository.SaveChangesAsync();
@@ -137,7 +141,7 @@ namespace Assignmen_PRN232_1.Services
             // Kiểm tra email nếu bị thay đổi
             if (!string.IsNullOrEmpty(dto.AccountEmail) && dto.AccountEmail != existing.AccountEmail)
             {
-                var emailExists = await _systemAccountRepository.ExistsByEmailAsync(dto.AccountEmail);
+                var emailExists = await _systemAccountRepository.ExistsByEmailAsync(dto.AccountEmail, dto.AccountId);
                 if (emailExists)
                     return ApiResponse<SystemAccountDto>.Fail("Email already exists");
             }

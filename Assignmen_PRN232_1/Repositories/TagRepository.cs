@@ -51,6 +51,11 @@ namespace Assignmen_PRN232__.Repositories
             return await ExistsAsync(t => t.TagName == tagName);
         }
 
+        public async Task<bool> ExistsByNameAsync(string tagName, int excludeTagId)
+        {
+            return await ExistsAsync(t => t.TagName == tagName && t.TagId != excludeTagId);
+        }
+
         // Explicit implementation cho int GetById
         public async Task<Tag?> GetByIdAsync(int id)
         {

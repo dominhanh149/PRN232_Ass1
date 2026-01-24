@@ -14,5 +14,6 @@ namespace Frontend.Services.IServices
         Task<(bool Success, string Message)> DeleteAsync(string id);
         Task<(bool Success, string Message)> AddTagAsync(string newsArticleId, int tagId);
         Task<(bool Success, string Message)> RemoveTagAsync(string newsArticleId, int tagId);
+        Task<List<TagDto>> GetAllTagsAsync();
     }
 }

@@ -177,7 +177,7 @@ namespace Frontend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTags()
         {
-            var tags = await _tagService.GetAllAsync();
+            var tags = await _newsArticleService.GetAllTagsAsync();
             return Json(tags);
         }
 
