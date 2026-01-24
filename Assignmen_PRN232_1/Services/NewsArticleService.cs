@@ -222,36 +222,61 @@ namespace Assignmen_PRN232_1.Services
 
         public async Task<ApiResponse<NewsArticleDto>> DuplicateAsync(string id)
         {
-            var original = await _newsArticleRepository.GetByIdAsync(id);
-            if (original == null)
-                return ApiResponse<NewsArticleDto>.Fail("News article not found");
-
-            var duplicate = new NewsArticle
+            try
             {
-                NewsArticleId = GenerateNewsArticleId(),
-                NewsTitle = original.NewsTitle + " (Copy)",
-                Headline = original.Headline,
-                NewsContent = original.NewsContent,
-                NewsSource = original.NewsSource,
-                CategoryId = original.CategoryId,
-                NewsStatus = original.NewsStatus,
-                CreatedDate = DateTime.Now
-            };
+                var original = await _newsArticleRepository.GetByIdAsync(id);
+                if (original == null)
+                    return ApiResponse<NewsArticleDto>.Fail("News article not found");
 
-            // Gán CreatedByID từ user hiện tại
-            var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (!string.IsNullOrEmpty(userId) && short.TryParse(userId, out var accountId))
-            {
-                duplicate.CreatedById = accountId;
+                var tagIds = original.Tags?.Select(t => t.TagId).ToList() ?? new List<int>();
+
+                var duplicate = new NewsArticle
+                {
+                    NewsArticleId = GenerateNewsArticleId(),
+                    NewsTitle = original.NewsTitle + " (Copy)",
+                    Headline = original.Headline,
+                    NewsContent = original.NewsContent,
+                    NewsSource = original.NewsSource,
+                    CategoryId = original.CategoryId,
+                    NewsStatus = original.NewsStatus,
+                    CreatedDate = DateTime.Now
+                };
+
+                var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (!string.IsNullOrEmpty(userId) && short.TryParse(userId, out var accountId))
+                {
+                    duplicate.CreatedById = accountId;
+                }
+
+                await _newsArticleRepository.AddAsync(duplicate);
+                await _newsArticleRepository.SaveChangesAsync();
+
+                if (tagIds.Any())
+                {
+                    var saved = await _newsArticleRepository.GetByIdAsync(duplicate.NewsArticleId);
+                    if (saved != null)
+                    {
+                        foreach (var tagId in tagIds)
+                        {
+                            var tag = await _tagRepository.GetByIdAsync(tagId);
+                            if (tag != null)
+                            {
+                                saved.Tags.Add(tag);
+                            }
+                        }
+                        await _newsArticleRepository.SaveChangesAsync();
+                    }
+                }
+
+                return ApiResponse<NewsArticleDto>.Ok(
+                    duplicate.Adapt<NewsArticleDto>(),
+                    "Duplicated successfully"
+                );
             }
-
-            await _newsArticleRepository.AddAsync(duplicate);
-            await _newsArticleRepository.SaveChangesAsync();
-
-            return ApiResponse<NewsArticleDto>.Ok(
-                duplicate.Adapt<NewsArticleDto>(),
-                "Duplicated successfully"
-            );
+            catch (Exception ex)
+            {
+                return ApiResponse<NewsArticleDto>.Fail($"Error duplicating article: {ex.Message}");
+            }
         }
 
         public async Task<ApiResponse<bool>> DeleteAsync(string id)

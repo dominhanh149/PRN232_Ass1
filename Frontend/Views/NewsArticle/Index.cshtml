@@ -123,10 +123,11 @@
                                 <th style="width: 12%">Title</th>
                                 <th style="width: 10%">Author</th>
                                 <th style="width: 10%">Category</th>
+                                <th style="width: 15%">Tags</th>
                                 <th style="width: 10%">Created By</th>
                                 <th style="width: 10%">Created Date</th>
                                 <th style="width: 8%">Status</th>
-                                <th style="width: 15%" class="text-center">Actions</th>
+                                <th style="width: 17%" class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -142,6 +143,26 @@
                                     <td>@(item.NewsSource ?? "")</td>
                                     <td>
                                         @(item.CategoryName ?? "N/A")
+                                    </td>
+                                    <td>
+                                        @if (item.Tags != null && item.Tags.Any())
+                                        {
+                                            @foreach (var tag in item.Tags)
+                                            {
+                                                <span class="badge bg-secondary me-1">
+                                                    @tag.TagName
+                                                    <button type="button" class="btn-close btn-close-white" 
+                                                            style="font-size: 0.6rem; padding: 0.1rem 0.2rem;" 
+                                                            onclick="removeTag('@item.NewsArticleId', @tag.TagId)"
+                                                            title="Remove tag"></button>
+                                                </span>
+                                            }
+                                        }
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#addTagModal"
+                                                onclick="loadAddTagForm('@item.NewsArticleId')" 
+                                                title="Add tag">+</button>
                                     </td>
                                     <td>@(item.CreatedByName ?? "N/A")</td>
                                     <td>
