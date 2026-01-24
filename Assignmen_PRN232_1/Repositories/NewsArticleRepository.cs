@@ -23,19 +23,19 @@ namespace Assignmen_PRN232__.Repositories
                 .Include(x => x.CreatedBy)
                 .AsNoTracking();
 
-            // Search theo Title
+            
             if (!string.IsNullOrWhiteSpace(searchDto.Title))
             {
                 query = query.Where(x => x.NewsTitle.Contains(searchDto.Title));
             }
 
-            // Search theo Author (CreatedBy.AccountName)
+            
             if (!string.IsNullOrWhiteSpace(searchDto.Author))
             {
                 query = query.Where(x => x.CreatedBy != null && x.CreatedBy.AccountName.Contains(searchDto.Author));
             }
 
-            // Search theo Keyword
+            
             if (!string.IsNullOrWhiteSpace(searchDto.Keyword))
             {
                 var keyword = searchDto.Keyword.Trim();
@@ -45,19 +45,19 @@ namespace Assignmen_PRN232__.Repositories
                     (x.NewsContent != null && x.NewsContent.Contains(keyword)));
             }
 
-            // Filter theo CategoryId
+            
             if (searchDto.CategoryId.HasValue && searchDto.CategoryId > 0)
             {
                 query = query.Where(x => x.CategoryId == searchDto.CategoryId);
             }
 
-            // Filter theo Status
+            
             if (searchDto.Status.HasValue)
             {
                 query = query.Where(x => x.NewsStatus == searchDto.Status);
             }
 
-            // Filter theo Date range
+            
             if (searchDto.FromDate.HasValue)
             {
                 query = query.Where(x => x.CreatedDate >= searchDto.FromDate);
@@ -67,9 +67,15 @@ namespace Assignmen_PRN232__.Repositories
                 query = query.Where(x => x.CreatedDate <= searchDto.ToDate);
             }
 
+            
+            if (searchDto.CreatedById.HasValue && searchDto.CreatedById > 0)
+            {
+                query = query.Where(x => x.CreatedById == searchDto.CreatedById);
+            }
+
             var totalRecords = await query.CountAsync();
 
-            // Sort DESC theo CreatedDate
+            
             var items = await query
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip((searchDto.PageIndex - 1) * searchDto.PageSize)
@@ -90,7 +96,7 @@ namespace Assignmen_PRN232__.Repositories
             return await ExistsAsync(x => x.NewsArticleId == newsArticleId);
         }
 
-        // Explicit implementation cho string GetById - Include Tags with Change Tracking
+        
         public async Task<NewsArticle?> GetByIdAsync(string id)
         {
             return await _dbContext.Set<NewsArticle>()

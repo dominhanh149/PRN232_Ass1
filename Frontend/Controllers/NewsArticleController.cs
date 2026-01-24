@@ -135,6 +135,44 @@ namespace Frontend.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: NewsArticle/MyArticles
+        public async Task<IActionResult> MyArticles(NewsArticleSearchDto dto)
+        {
+            var accountId = Request.Cookies["AccountId"];
+            if (string.IsNullOrEmpty(accountId) || !short.TryParse(accountId, out var userId))
+            {
+                TempData["ErrorMessage"] = "User not found";
+                return RedirectToAction("Index", "Login");
+            }
+
+            var searchDto = new NewsArticleSearchDto
+            {
+                PageIndex = dto.PageIndex > 0 ? dto.PageIndex : 1,
+                PageSize = dto.PageSize > 0 ? dto.PageSize : 10,
+                Title = dto.Title,
+                CategoryId = dto.CategoryId,
+                Status = dto.Status,
+                FromDate = dto.FromDate,
+                ToDate = dto.ToDate,
+                CreatedById = userId
+            };
+
+            var result = await _newsArticleService.GetListPagingAsync(searchDto);
+
+            ViewBag.Categories = await _categoryService.GetAllAsync();
+            ViewBag.CurrentPage = searchDto.PageIndex;
+            ViewBag.PageSize = searchDto.PageSize;
+            ViewBag.Title = searchDto.Title;
+            ViewBag.CategoryId = searchDto.CategoryId;
+            ViewBag.Status = searchDto.Status;
+            ViewBag.FromDate = searchDto.FromDate;
+            ViewBag.ToDate = searchDto.ToDate;
+            ViewBag.TotalPages = result.TotalPages;
+            ViewBag.TotalRecords = result.TotalRecords;
+
+            return View(result);
+        }
+
         // AJAX: Get form for create/edit modal
         [HttpGet]
         public async Task<IActionResult> GetCreateEditForm(string? id)
@@ -177,7 +215,7 @@ namespace Frontend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTags()
         {
-            var tags = await _newsArticleService.GetAllTagsAsync();
+            var tags = await _tagService.GetAllAsync();
             return Json(tags);
         }
 

@@ -11,15 +11,13 @@ namespace Assignmen_PRN232_1.Controllers.Api
     public class NewsArticlesController : ControllerBase
     {
         private readonly INewsArticleService _newsArticleService;
-        private readonly ITagService _tagService;
 
-        public NewsArticlesController(INewsArticleService newsArticleService, ITagService tagService)
+        public NewsArticlesController(INewsArticleService newsArticleService)
         {
             _newsArticleService = newsArticleService;
-            _tagService = tagService;
         }
 
-        // GET api/newsarticles
+        
         [HttpGet]
         public async Task<IActionResult> GetListPaging([FromQuery] NewsArticleSearchDto dto)
         {
@@ -27,7 +25,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(result);
         }
 
-        // GET api/newsarticles/public
+        
         [AllowAnonymous]
         [HttpGet("public")]
         public async Task<IActionResult> GetPublicListPaging([FromQuery] NewsArticleSearchDto dto)
@@ -36,7 +34,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(result);
         }
 
-        // GET api/newsarticles/all
+        
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
@@ -44,7 +42,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(result);
         }
 
-        // GET api/newsarticles/id
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -54,7 +52,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(result);
         }
 
-        // POST api/newsarticles/create-or-edit
+        
         [HttpPost("create-or-edit")]
         public async Task<IActionResult> CreateOrEdit([FromBody] NewsArticleSaveDto dto)
         {
@@ -62,7 +60,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return StatusCode(response.StatusCode, response);
         }
 
-        // POST api/newsarticles/{id}/duplicate
+        
         [HttpPost("{id}/duplicate")]
         public async Task<IActionResult> Duplicate(string id)
         {
@@ -70,7 +68,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return StatusCode(response.StatusCode, response);
         }
 
-        // DELETE api/newsarticles/id
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -78,7 +76,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return StatusCode(response.StatusCode, response);
         }
 
-        // POST api/newsarticles/{id}/tags/{tagId}
+        
         [HttpPost("{id}/tags/{tagId:int}")]
         public async Task<IActionResult> AddTag(string id, int tagId)
         {
@@ -86,20 +84,12 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return StatusCode(response.StatusCode, response);
         }
 
-        // DELETE api/newsarticles/{id}/tags/{tagId}
+        
         [HttpDelete("{id}/tags/{tagId:int}")]
         public async Task<IActionResult> RemoveTag(string id, int tagId)
         {
             var response = await _newsArticleService.RemoveTagAsync(id, tagId);
             return StatusCode(response.StatusCode, response);
-        }
-
-        // GET api/newsarticles/tags/all
-        [HttpGet("tags/all")]
-        public async Task<IActionResult> GetAllTags()
-        {
-            var result = await _tagService.GetAllAsync();
-            return Ok(result);
         }
     }
 }

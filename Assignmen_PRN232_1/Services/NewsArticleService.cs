@@ -25,7 +25,7 @@ namespace Assignmen_PRN232_1.Services
         {
             var newsArticles = await _newsArticleRepository.GetAllAsync();
 
-            // Entity -> DTO
+            
             var result = newsArticles.Adapt<IEnumerable<NewsArticleDto>>();
 
             return result;
@@ -35,7 +35,7 @@ namespace Assignmen_PRN232_1.Services
         {
             var pagedData = await _newsArticleRepository.GetListPagingAsync(dto);
 
-            // Eager load Tags cho mỗi NewsArticle
+            
             var items = pagedData.Items.Select(na => new NewsArticleDto
             {
                 NewsArticleId = na.NewsArticleId,
@@ -126,9 +126,9 @@ namespace Assignmen_PRN232_1.Services
             return dto;
         }
 
-        /// <summary>
-        /// Router - Create hoặc Update dựa vào ID
-        /// </summary>
+        
+        
+        
         public async Task<ApiResponse<NewsArticleDto>> CreateOrEditAsync(NewsArticleSaveDto dto)
         {
             return string.IsNullOrEmpty(dto.NewsArticleId)
@@ -138,11 +138,11 @@ namespace Assignmen_PRN232_1.Services
 
         #region Private
 
-        /// <summary>
-        /// Generate random string ID for NewsArticle
-        /// Format: NA + 12 random alphanumeric characters
-        /// Example: NA_ABC123XYZ456
-        /// </summary>
+        
+        
+        
+        
+        
         private string GenerateNewsArticleId()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -171,7 +171,7 @@ namespace Assignmen_PRN232_1.Services
             entity.CreatedDate = DateTime.Now;
             entity.NewsStatus = entity.NewsStatus ?? true;
 
-            // Gán CreatedByID từ user hiện tại
+            
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (!string.IsNullOrEmpty(userId) && short.TryParse(userId, out var accountId))
             {
@@ -202,7 +202,7 @@ namespace Assignmen_PRN232_1.Services
             dto.Adapt(existing);
             existing.ModifiedDate = DateTime.Now;
 
-            // Gán UpdatedByID từ user hiện tại
+            
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (!string.IsNullOrEmpty(userId) && short.TryParse(userId, out var accountId))
             {
@@ -293,16 +293,16 @@ namespace Assignmen_PRN232_1.Services
 
         public async Task<ApiResponse<bool>> AddTagAsync(string newsArticleId, int tagId)
         {
-            // Kiểm tra NewsArticle tồn tại
+            
             var newsArticle = await _newsArticleRepository.GetByIdAsync(newsArticleId);
             if (newsArticle == null)
                 return ApiResponse<bool>.Fail("News article not found");
 
-            // Kiểm tra tag đã được thêm chưa
+            
             if (newsArticle.Tags.Any(x => x.TagId == tagId))
                 return ApiResponse<bool>.Fail("Tag already added to this article");
 
-            // QUAN TRỌNG: Phải load Tag từ database, không tạo object mới
+            
             var tag = await _tagRepository.GetByIdAsync(tagId);
             if (tag == null)
                 return ApiResponse<bool>.Fail("Tag not found");

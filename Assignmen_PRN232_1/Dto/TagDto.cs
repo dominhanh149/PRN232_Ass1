@@ -1,4 +1,4 @@
-﻿using Assignmen_PRN232_1.DTOs.Common;
+using Assignmen_PRN232_1.DTOs.Common;
 using System.ComponentModel.DataAnnotations;
 
 namespace Assignmen_PRN232__.Dto
@@ -26,6 +26,6 @@ namespace Assignmen_PRN232__.Dto
 
     public class TagSearchDto : BaseSearchDto
     {
-        // Nếu sau này Tag có filter riêng thì thêm ở đây
+        
     }
 }

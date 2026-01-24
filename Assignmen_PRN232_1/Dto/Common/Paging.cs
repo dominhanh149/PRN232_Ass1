@@ -1,4 +1,4 @@
-﻿namespace Assignmen_PRN232_1.DTOs.Common
+namespace Assignmen_PRN232_1.DTOs.Common
 {
     public class PagingResponse<T>
     {

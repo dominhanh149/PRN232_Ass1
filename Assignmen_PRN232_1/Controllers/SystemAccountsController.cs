@@ -1,4 +1,4 @@
-﻿using Assignmen_PRN232__.Dto;
+using Assignmen_PRN232__.Dto;
 using Assignmen_PRN232__.Enums;
 using Assignmen_PRN232_1.Services.IServices;
 using Microsoft.AspNetCore.Authentication;
@@ -21,7 +21,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             _systemAccountService = systemAccountService;
         }
 
-        // GET api/systemaccounts
+        
         [HttpGet]
         public async Task<IActionResult> GetListPaging([FromQuery] SystemAccountSearchDto dto)
         {
@@ -29,7 +29,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(result);
         }
 
-        // GET api/systemaccounts/all
+        
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
@@ -37,7 +37,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(result);
         }
 
-        // GET api/systemaccounts/5
+        
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(short id)
         {
@@ -47,7 +47,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(result);
         }
 
-        // POST api/systemaccounts/create-or-edit
+        
         [HttpPost("create-or-edit")]
         public async Task<IActionResult> CreateOrEdit([FromBody] SystemAccountSaveDto dto)
         {
@@ -55,7 +55,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return StatusCode(response.StatusCode, response);
         }
 
-        // DELETE api/systemaccounts/5
+        
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(short id)
         {
@@ -63,7 +63,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return StatusCode(response.StatusCode, response);
         }
 
-        // POST api/systemaccounts/login
+        
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] SystemAccountLoginDto dto)
@@ -75,7 +75,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
 
             var account = response.Data;
 
-            // 👉 Tạo claims
+            
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),

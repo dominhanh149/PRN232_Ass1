@@ -38,6 +38,8 @@ namespace Frontend.Services
                     queryParams.Add($"FromDate={searchDto.FromDate.Value:yyyy-MM-dd}");
                 if (searchDto.ToDate.HasValue)
                     queryParams.Add($"ToDate={searchDto.ToDate.Value:yyyy-MM-dd}");
+                if (searchDto.CreatedById.HasValue && searchDto.CreatedById > 0)
+                    queryParams.Add($"CreatedById={searchDto.CreatedById}");
 
                 var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : "";
 
@@ -256,28 +258,6 @@ namespace Frontend.Services
             {
                 Console.WriteLine($"Error in RemoveTagAsync: {ex.Message}");
                 return (false, $"Error: {ex.Message}");
-            }
-        }
-
-        // GET: Lấy tất cả tags
-        public async Task<List<TagDto>> GetAllTagsAsync()
-        {
-            try
-            {
-                var response = await _httpClient.GetAsync("NewsArticles/tags/all");
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    return new List<TagDto>();
-                }
-
-                var tags = await response.Content.ReadFromJsonAsync<List<TagDto>>();
-                return tags ?? new List<TagDto>();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in GetAllTagsAsync: {ex.Message}");
-                return new List<TagDto>();
             }
         }
     }

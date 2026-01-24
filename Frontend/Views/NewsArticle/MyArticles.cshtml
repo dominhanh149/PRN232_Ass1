@@ -3,12 +3,10 @@
 @model Assignmen_PRN232_1.DTOs.Common.PagingResponse<NewsArticleDto>
 
 @{
-    ViewData["PageTitle"] = "News Article Management";
+    ViewData["PageTitle"] = "My Articles";
     var currentPage = ViewBag.CurrentPage ?? 1;
     var pageSize = ViewBag.PageSize ?? 10;
-    var keyword = ViewBag.Keyword ?? "";
     var title = ViewBag.Title ?? "";
-    var author = ViewBag.Author ?? "";
     var categoryId = ViewBag.CategoryId ?? 0;
     var status = ViewBag.Status;
     var fromDate = ViewBag.FromDate;
@@ -22,7 +20,7 @@
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <h2><i class="bi bi-newspaper"></i> News Article Management</h2>
+            <h2>My Articles</h2>
         </div>
         <div class="col-md-6 text-end">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createEditModal" 
@@ -51,14 +49,10 @@
     <!-- Search Form -->
     <div class="card mb-4">
         <div class="card-body">
-            <form asp-action="Index" method="get" class="row g-3">
-                <div class="col-md-3">
+            <form asp-action="MyArticles" method="get" class="row g-3">
+                <div class="col-md-4">
                     <label class="form-label">Title</label>
                     <input type="text" name="title" value="@title" class="form-control" placeholder="Search by title">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Author</label>
-                    <input type="text" name="author" value="@author" class="form-control" placeholder="Search by author">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Category</label>
@@ -87,21 +81,21 @@
                         <option value="50" selected="@(pageSize == 50)">50</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        Search
+                    </button>
+                    <a asp-action="MyArticles" class="btn btn-secondary">
+                        Reset
+                    </a>
+                </div>
+                <div class="col-md-6">
                     <label class="form-label">From Date</label>
                     <input type="date" name="fromDate" value="@(fromDate?.ToString("yyyy-MM-dd"))" class="form-control">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <label class="form-label">To Date</label>
                     <input type="date" name="toDate" value="@(toDate?.ToString("yyyy-MM-dd"))" class="form-control">
-                </div>
-                <div class="col-md-6 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary me-2">
-                        <i class="bi bi-search"></i> Search
-                    </button>
-                    <a asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-arrow-counterclockwise"></i> Reset
-                    </a>
                 </div>
             </form>
         </div>
@@ -230,11 +224,10 @@
                 <!-- Previous Button -->
                 <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                     <a class="page-link" 
-                       asp-action="Index" 
+                       asp-action="MyArticles" 
                        asp-route-pageIndex="@(currentPage - 1)" 
                        asp-route-pageSize="@pageSize" 
                        asp-route-title="@title"
-                       asp-route-author="@author"
                        asp-route-categoryId="@categoryId"
                        asp-route-status="@status"
                        asp-route-fromDate="@fromDate"
@@ -252,11 +245,10 @@
                     {
                         <li class="page-item">
                             <a class="page-link" 
-                               asp-action="Index" 
+                               asp-action="MyArticles" 
                                asp-route-pageIndex="1" 
                                asp-route-pageSize="@pageSize" 
                                asp-route-title="@title"
-                               asp-route-author="@author"
                                asp-route-categoryId="@categoryId"
                                asp-route-status="@status"
                                asp-route-fromDate="@fromDate"
@@ -272,11 +264,10 @@
                     {
                         <li class="page-item @(i == currentPage ? "active" : "")">
                             <a class="page-link" 
-                               asp-action="Index" 
+                               asp-action="MyArticles" 
                                asp-route-pageIndex="@i" 
                                asp-route-pageSize="@pageSize" 
                                asp-route-title="@title"
-                               asp-route-author="@author"
                                asp-route-categoryId="@categoryId"
                                asp-route-status="@status"
                                asp-route-fromDate="@fromDate"
@@ -292,11 +283,10 @@
                         }
                         <li class="page-item">
                             <a class="page-link" 
-                               asp-action="Index" 
+                               asp-action="MyArticles" 
                                asp-route-pageIndex="@totalPages" 
                                asp-route-pageSize="@pageSize" 
                                asp-route-title="@title"
-                               asp-route-author="@author"
                                asp-route-categoryId="@categoryId"
                                asp-route-status="@status"
                                asp-route-fromDate="@fromDate"
@@ -308,11 +298,10 @@
                 <!-- Next Button -->
                 <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
                     <a class="page-link" 
-                       asp-action="Index" 
+                       asp-action="MyArticles" 
                        asp-route-pageIndex="@(currentPage + 1)" 
                        asp-route-pageSize="@pageSize" 
                        asp-route-title="@title"
-                       asp-route-author="@author"
                        asp-route-categoryId="@categoryId"
                        asp-route-status="@status"
                        asp-route-fromDate="@fromDate"

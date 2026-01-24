@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Assignmen_PRN232_1.Controllers.Api
 {
-    [Authorize(Roles = "Staff")]
+    [Authorize(Roles = "Staff, Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
@@ -17,7 +17,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             _categoryService = categoryService;
         }
 
-        // GET api/categories
+        
         [HttpGet]
         public async Task<IActionResult> GetListPaging([FromQuery] CategorySearchDto dto)
         {
@@ -25,7 +25,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(result);
         }
 
-        // GET api/categories/all
+        
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
@@ -33,7 +33,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(result);
         }
 
-        // GET api/categories/5
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(short id)
         {
@@ -43,7 +43,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(result);
         }
 
-        // POST api/categories/create-or-edit
+        
         [HttpPost("create-or-edit")]
         public async Task<IActionResult> CreateOrEdit([FromBody] CategorySaveDto dto)
         {
@@ -51,7 +51,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return StatusCode(response.StatusCode, response);
         }
 
-        // DELETE api/categories/5
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(short id)
         {

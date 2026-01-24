@@ -1,4 +1,4 @@
-﻿using Assignmen_PRN232__.Dto;
+using Assignmen_PRN232__.Dto;
 using Assignmen_PRN232__.Dto.Common;
 using Assignmen_PRN232_1.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Assignmen_PRN232_1.Controllers.Api
 {
-    [Authorize(Roles = "Staff")]
+    [Authorize(Roles = "Staff, Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class TagsController : ControllerBase
@@ -18,7 +18,16 @@ namespace Assignmen_PRN232_1.Controllers.Api
             _tagService = tagService;
         }
 
-        // GET api/tags
+        
+        [AllowAnonymous]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _tagService.GetAllAsync();
+            return Ok(result);
+        }
+
+        
         [HttpGet]
         public async Task<IActionResult> GetListPaging([FromQuery] TagSearchDto dto)
         {
@@ -26,7 +35,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(ApiResponse<object>.Ok(result, "Get list successfully"));
         }
 
-        // GET api/tags/5
+        
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -36,7 +45,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return Ok(ApiResponse<TagDto>.Ok(result, "Get tag successfully"));
         }
 
-        // POST api/tags/create-or-edit
+        
         [HttpPost("create-or-edit")]
         public async Task<IActionResult> CreateOrEdit([FromBody] TagSaveDto dto)
         {
@@ -44,7 +53,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             return StatusCode(response.StatusCode, response);
         }
 
-        // DELETE api/tags/5
+        
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {

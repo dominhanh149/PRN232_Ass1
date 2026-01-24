@@ -22,25 +22,25 @@ namespace Assignmen_PRN232__.Repositories
                 .Include(x => x.CreatedBy)
                 .AsNoTracking();
 
-            // Filter theo CategoryId
+            
             if (searchDto.CategoryId.HasValue && searchDto.CategoryId > 0)
             {
                 query = query.Where(x => x.CategoryId == searchDto.CategoryId);
             }
 
-            // Filter theo AuthorId
+            
             if (searchDto.AuthorId.HasValue && searchDto.AuthorId > 0)
             {
                 query = query.Where(x => x.CreatedById == searchDto.AuthorId);
             }
 
-            // Filter theo Status
+            
             if (searchDto.Status.HasValue)
             {
                 query = query.Where(x => x.NewsStatus == searchDto.Status);
             }
 
-            // Filter theo Date range
+            
             if (searchDto.FromDate.HasValue)
             {
                 query = query.Where(x => x.CreatedDate >= searchDto.FromDate);
@@ -58,7 +58,7 @@ namespace Assignmen_PRN232__.Repositories
                 TotalActive = articles.Count(x => x.NewsStatus == true),
                 TotalInactive = articles.Count(x => x.NewsStatus == false),
 
-                // Thống kê theo Category - Sort DESC theo ArticleCount
+                
                 CategoryStats = articles
                     .GroupBy(x => new { x.CategoryId, x.Category?.CategoryName })
                     .Select(g => new CategoryStatDto
@@ -72,7 +72,7 @@ namespace Assignmen_PRN232__.Repositories
                     .OrderByDescending(x => x.ArticleCount)
                     .ToList(),
 
-                // Thống kê theo Author - Sort DESC theo ArticleCount
+                
                 AuthorStats = articles
                     .GroupBy(x => new { x.CreatedById, x.CreatedBy?.AccountName })
                     .Select(g => new AuthorStatDto

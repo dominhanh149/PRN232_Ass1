@@ -17,7 +17,7 @@ namespace Assignmen_PRN232_1.Controllers.Api
             _reportService = reportService;
         }
 
-        // GET api/report/news-articles
+        
         [HttpGet("news-articles")]
         public async Task<IActionResult> GetNewsArticleReport([FromQuery] ReportSearchDto searchDto)
         {

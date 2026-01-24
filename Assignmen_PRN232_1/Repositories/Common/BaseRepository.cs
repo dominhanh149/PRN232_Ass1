@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
@@ -21,24 +21,24 @@ namespace Assignmen_PRN232_1.Data
 
         #region EF Core CRUD
 
-        /// <summary>
-        /// Get by primary key - Generic version (supports int, short, string, Guid, etc.)
-        /// Example:
-        ///  - GetByIdAsync<int>(5)
-        ///  - GetByIdAsync<short>(2)
-        ///  - GetByIdAsync<string>("ABC123")
-        ///  - GetByIdAsync<Guid>(Guid.Parse("..."))
-        /// </summary>
+        
+        
+        
+        
+        
+        
+        
+        
         public async Task<T?> GetByIdAsync<TKey>(TKey id)
             where TKey : notnull
         {
             return await _dbContext.Set<T>().FindAsync(new object[] { id });
         }
 
-        /// <summary>
-        /// Get by int primary key - convenience overload
-        /// Example: GetByIdAsync(5)
-        /// </summary>
+        
+        
+        
+        
         public Task<T?> GetByIdAsync(int id) => GetByIdAsync<int>(id);
 
         public async Task<IEnumerable<T>> GetAllAsync() =>

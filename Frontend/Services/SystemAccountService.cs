@@ -28,6 +28,8 @@ namespace Frontend.Services
                     queryParams.Add($"PageSize={searchDto.PageSize}");
                 if (!string.IsNullOrEmpty(searchDto.Keyword))
                     queryParams.Add($"Keyword={Uri.EscapeDataString(searchDto.Keyword)}");
+                if (searchDto.AccountRole.HasValue)
+                    queryParams.Add($"AccountRole={searchDto.AccountRole}");
 
                 var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : "";
 

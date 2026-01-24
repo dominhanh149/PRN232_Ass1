@@ -55,14 +55,15 @@ namespace Frontend.Services
         {
             try
             {
-                var searchDto = new TagSearchDto
-                {
-                    PageIndex = 1,
-                    PageSize = 1000 // Lấy nhiều để có tất cả
-                };
+                var response = await _httpClient.GetAsync("Tags/all");
 
-                var result = await GetListPagingAsync(searchDto);
-                return result.Items?.ToList() ?? new List<TagDto>();
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new List<TagDto>();
+                }
+
+                var tags = await response.Content.ReadFromJsonAsync<List<TagDto>>();
+                return tags ?? new List<TagDto>();
             }
             catch (Exception ex)
             {

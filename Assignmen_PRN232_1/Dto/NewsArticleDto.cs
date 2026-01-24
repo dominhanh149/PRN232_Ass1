@@ -1,4 +1,4 @@
-﻿using Assignmen_PRN232__.Models;
+using Assignmen_PRN232__.Models;
 using Assignmen_PRN232_1.DTOs.Common;
 using System.ComponentModel.DataAnnotations;
 
@@ -73,5 +73,6 @@ namespace Assignmen_PRN232__.Dto
         public short? CategoryId { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
+        public short? CreatedById { get; set; }
     }
 }

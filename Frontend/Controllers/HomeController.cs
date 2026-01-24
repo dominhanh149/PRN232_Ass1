@@ -19,7 +19,7 @@ namespace Frontend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View();
+            return RedirectToAction("Index", "PublicNews");
         }
 
         public IActionResult Privacy()

@@ -1,4 +1,4 @@
-﻿namespace Assignmen_PRN232__.Dto.Common
+namespace Assignmen_PRN232__.Dto.Common
 {
     public class ApiResponse<T>
     {

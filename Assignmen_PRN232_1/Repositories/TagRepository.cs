@@ -1,4 +1,4 @@
-﻿//using Assignmen_PRN232__.Data;
+
 using Assignmen_PRN232__.Dto;
 using Assignmen_PRN232__.Models;
 using Assignmen_PRN232__.Repositories.IRepositories;
@@ -18,9 +18,9 @@ namespace Assignmen_PRN232__.Repositories
 
         public async Task<PagingResponse<Tag>> GetListPagingAsync(TagSearchDto searchDto)
         {
-            var query = FindAll(); // AsNoTracking
+            var query = FindAll(); 
 
-            // 🔍 Search theo Keyword
+            
             if (!string.IsNullOrWhiteSpace(searchDto.Keyword))
             {
                 var keyword = searchDto.Keyword.Trim();
@@ -56,7 +56,7 @@ namespace Assignmen_PRN232__.Repositories
             return await ExistsAsync(t => t.TagName == tagName && t.TagId != excludeTagId);
         }
 
-        // Explicit implementation cho int GetById
+        
         public async Task<Tag?> GetByIdAsync(int id)
         {
             return await _dbContext.Set<Tag>()

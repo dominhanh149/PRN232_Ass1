@@ -1,4 +1,4 @@
-﻿using Assignmen_PRN232__.Models;
+using Assignmen_PRN232__.Models;
 using Assignmen_PRN232_1.DTOs.Common;
 using System.ComponentModel.DataAnnotations;
 
@@ -38,6 +38,6 @@ namespace Assignmen_PRN232__.Dto
 
     public class CategorySearchDto : BaseSearchDto
     {
-        // Kế thừa: Keyword, Status, PageIndex, PageSize
+        
     }
 }

@@ -20,7 +20,7 @@ namespace Assignmen_PRN232__.Repositories
         {
             var query = FindAll();
 
-            // 🔍 Search theo Keyword
+            
             if (!string.IsNullOrWhiteSpace(searchDto.Keyword))
             {
                 var keyword = searchDto.Keyword.Trim();
@@ -36,7 +36,7 @@ namespace Assignmen_PRN232__.Repositories
 
             var totalRecords = await query.CountAsync();
 
-            // Self-join using GroupJoin to get parent category name
+            
             var items = await query
                 .OrderByDescending(x => x.CategoryId)
                 .Skip((searchDto.PageIndex - 1) * searchDto.PageSize)
@@ -79,7 +79,7 @@ namespace Assignmen_PRN232__.Repositories
                 c.CategoryId != excludeCategoryId);
         }
 
-        // Explicit implementation cho short GetById
+        
         public Task<Category?> GetByIdAsync(short id) => GetByIdAsync<short>(id);
     }
 }

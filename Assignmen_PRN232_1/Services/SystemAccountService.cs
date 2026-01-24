@@ -57,9 +57,9 @@ namespace Assignmen_PRN232_1.Services
             return dto;
         }
 
-        /// <summary>
-        /// Router - Create hoặc Update dựa vào ID
-        /// </summary>
+        
+        
+        
         public async Task<ApiResponse<SystemAccountDto>> CreateOrEditAsync(SystemAccountSaveDto dto)
         {
             return dto.AccountId == 0
@@ -67,9 +67,9 @@ namespace Assignmen_PRN232_1.Services
                 : await UpdateAsync(dto);
         }
 
-        /// <summary>
-        /// Login API - Kiểm tra email & password
-        /// </summary>
+        
+        
+        
         public async Task<ApiResponse<SystemAccountDto>> LoginAsync(SystemAccountLoginDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.AccountEmail) || string.IsNullOrWhiteSpace(dto.AccountPassword))
@@ -94,7 +94,7 @@ namespace Assignmen_PRN232_1.Services
                 return ApiResponse<SystemAccountDto>.Fail("Invalid email or password");
 
 
-            // So sánh password
+            
             if (account.AccountPassword != dto.AccountPassword)
                 return ApiResponse<SystemAccountDto>.Fail("Invalid email or password");
 
@@ -108,7 +108,7 @@ namespace Assignmen_PRN232_1.Services
 
         private async Task<ApiResponse<SystemAccountDto>> CreateAsync(SystemAccountSaveDto dto)
         {
-            // Kiểm tra email đã tồn tại chưa
+            
             var exists = await _systemAccountRepository.ExistsByEmailAsync(dto.AccountEmail);
             if (exists)
                 return ApiResponse<SystemAccountDto>.Fail("Email already exists");
@@ -116,10 +116,10 @@ namespace Assignmen_PRN232_1.Services
             if (string.IsNullOrWhiteSpace(dto.AccountPassword))
                 return ApiResponse<SystemAccountDto>.Fail("Password is required");
 
-            // DTO -> Entity
+            
             var entity = dto.Adapt<SystemAccount>();
             
-            // Tạo ID tuần tự
+            
             var maxId = (await _systemAccountRepository.GetAllAsync()).MaxBy(x => x.AccountId)?.AccountId ?? 0;
             entity.AccountId = (short)(maxId + 1);
 
@@ -138,7 +138,7 @@ namespace Assignmen_PRN232_1.Services
             if (existing == null)
                 return ApiResponse<SystemAccountDto>.Fail("Account not found");
 
-            // Kiểm tra email nếu bị thay đổi
+            
             if (!string.IsNullOrEmpty(dto.AccountEmail) && dto.AccountEmail != existing.AccountEmail)
             {
                 var emailExists = await _systemAccountRepository.ExistsByEmailAsync(dto.AccountEmail, dto.AccountId);
@@ -146,12 +146,12 @@ namespace Assignmen_PRN232_1.Services
                     return ApiResponse<SystemAccountDto>.Fail("Email already exists");
             }
 
-            // Update thông tin (không cập nhật password nếu không có)
+            
             existing.AccountName = dto.AccountName ?? existing.AccountName;
             existing.AccountEmail = dto.AccountEmail ?? existing.AccountEmail;
             existing.AccountRole = dto.AccountRole ?? existing.AccountRole;
 
-            // Chỉ update password nếu có giá trị mới
+            
             if (!string.IsNullOrWhiteSpace(dto.AccountPassword))
             {
                 existing.AccountPassword = dto.AccountPassword;
@@ -199,7 +199,7 @@ namespace Assignmen_PRN232_1.Services
             if (account == null)
                 return ApiResponse<bool>.Fail("Account not found");
 
-            // Kiểm tra xem account đã tạo News chưa
+            
             if (account.NewsArticles != null && account.NewsArticles.Any())
                 return ApiResponse<bool>.Fail("Cannot delete account that has created news articles");
 
@@ -209,9 +209,9 @@ namespace Assignmen_PRN232_1.Services
             return ApiResponse<bool>.Ok(true, "Deleted successfully");
         }
 
-        /// <summary>
-        /// Get role name từ role ID
-        /// </summary>
+        
+        
+        
         private string GetRoleName(int? roleId)
         {
             return roleId switch

@@ -1,4 +1,4 @@
-﻿using Assignmen_PRN232__.Dto;
+using Assignmen_PRN232__.Dto;
 using Assignmen_PRN232__.Dto.Common;
 using Assignmen_PRN232__.Models;
 using Assignmen_PRN232__.Repositories.IRepositories;
@@ -21,7 +21,7 @@ namespace Assignmen_PRN232_1.Services
         {
             var tags = await _tagRepository.GetAllAsync();
 
-            // Entity -> DTO
+            
             var result = tags.Adapt<IEnumerable<TagDto>>();
 
             return result;
@@ -49,9 +49,9 @@ namespace Assignmen_PRN232_1.Services
             return tag.Adapt<TagDto>();
         }
 
-        /// <summary>
-        /// Router
-        /// </summary>
+        
+        
+        
         public async Task<ApiResponse<TagDto>> CreateOrEditAsync(TagSaveDto dto)
         {
             return dto.TagId == 0
@@ -63,14 +63,14 @@ namespace Assignmen_PRN232_1.Services
 
         private async Task<ApiResponse<TagDto>> CreateAsync(TagSaveDto dto)
         {
-            // Kiểm tra trùng TagName
+            
             var exists = await _tagRepository.ExistsByNameAsync(dto.TagName!);
             if (exists)
                 return ApiResponse<TagDto>.Fail("Tag name already exists");
 
             var entity = dto.Adapt<Tag>();
             
-            // Tạo ID tuần tự
+            
             var maxId = (await _tagRepository.GetAllAsync()).MaxBy(x => x.TagId)?.TagId ?? 0;
             entity.TagId = maxId + 1;
 
@@ -89,7 +89,7 @@ namespace Assignmen_PRN232_1.Services
             if (existing == null)
                 return ApiResponse<TagDto>.Fail("Tag not found");
 
-            // Kiểm tra trùng TagName (trừ chính nó)
+            
             var duplicateExists = await _tagRepository.ExistsByNameAsync(dto.TagName!, dto.TagId);
             if (duplicateExists)
                 return ApiResponse<TagDto>.Fail("Tag name already exists");
@@ -113,7 +113,7 @@ namespace Assignmen_PRN232_1.Services
             if (tag == null)
                 return ApiResponse<bool>.Fail("Tag not found");
 
-            // Kiểm tra tag có đang được dùng trong NewsArticle không
+            
             if (tag.NewsArticles != null && tag.NewsArticles.Any())
                 return ApiResponse<bool>.Fail("Cannot delete tag that is being used in news articles");
 

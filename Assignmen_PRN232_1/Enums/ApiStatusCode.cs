@@ -1,4 +1,4 @@
-﻿namespace Assignmen_PRN232_1.Common
+namespace Assignmen_PRN232_1.Common
 {
     public enum ApiStatusCode
     {

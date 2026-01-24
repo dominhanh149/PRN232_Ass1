@@ -21,7 +21,7 @@ namespace Assignmen_PRN232_1.Services
         {
             var categories = await _categoryRepository.GetAllAsync();
 
-            // Entity -> DTO
+            
             var result = categories.Adapt<IEnumerable<CategoryDto>>();
 
             return result;
@@ -49,9 +49,9 @@ namespace Assignmen_PRN232_1.Services
             return category.Adapt<CategoryDto>();
         }
 
-        /// <summary>
-        /// Router: Create hoặc Edit dựa vào CategoryId
-        /// </summary>
+        
+        
+        
         public async Task<ApiResponse<CategoryDto>> CreateOrEditAsync(CategorySaveDto dto)
         {
             return dto.CategoryId == 0
@@ -63,7 +63,7 @@ namespace Assignmen_PRN232_1.Services
 
         private async Task<ApiResponse<CategoryDto>> CreateAsync(CategorySaveDto dto)
         {
-            // Kiểm tra trùng Category cùng Parent
+            
             if (await _categoryRepository.ExistsByNameAndParentAsync(dto.CategoryName, dto.ParentCategoryId))
                 return ApiResponse<CategoryDto>.Fail("Category name already exists with the same parent");
 
@@ -84,11 +84,11 @@ namespace Assignmen_PRN232_1.Services
             if (existing == null)
                 return ApiResponse<CategoryDto>.Fail("Category not found");
 
-            // Kiểm tra trùng Category cùng Parent (trừ chính nó)
+            
             if (await _categoryRepository.ExistsByNameAndParentAsync(dto.CategoryName, dto.ParentCategoryId, dto.CategoryId))
                 return ApiResponse<CategoryDto>.Fail("Category name already exists with the same parent");
 
-            // Không đổi ParentCategory nếu đã có News
+            
             if (existing.ParentCategoryId != dto.ParentCategoryId && existing.NewsArticles != null && existing.NewsArticles.Any())
                 return ApiResponse<CategoryDto>.Fail("Cannot change parent category when category has news articles");
 
@@ -111,7 +111,7 @@ namespace Assignmen_PRN232_1.Services
             if (category == null)
                 return ApiResponse<bool>.Fail("Category not found");
 
-            // Không xoá nếu đã dùng trong News
+            
             if (category.NewsArticles != null && category.NewsArticles.Any())
                 return ApiResponse<bool>.Fail("Cannot delete category that has news articles");
 

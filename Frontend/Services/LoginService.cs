@@ -76,6 +76,7 @@ namespace Frontend.Services
                     };
 
                     var roleName = ((AccountRole)(apiResponse.Data?.AccountRole ?? 0)).ToString();
+                    httpContext.Response.Cookies.Append("AccountId", apiResponse.Data?.AccountId.ToString() ?? "", cookieOptions);
                     httpContext.Response.Cookies.Append("UserName", apiResponse.Data?.AccountName ?? "", cookieOptions);
                     httpContext.Response.Cookies.Append("UserEmail", apiResponse.Data?.AccountEmail ?? "", cookieOptions);
                     httpContext.Response.Cookies.Append("UserRole", roleName, cookieOptions);
@@ -99,6 +100,7 @@ namespace Frontend.Services
                 var httpContext = _httpContextAccessor.HttpContext;
                 if (httpContext != null)
                 {
+                    httpContext.Response.Cookies.Delete("AccountId");
                     httpContext.Response.Cookies.Delete("UserName");
                     httpContext.Response.Cookies.Delete("UserEmail");
                     httpContext.Response.Cookies.Delete("UserRole");

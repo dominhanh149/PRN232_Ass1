@@ -19,7 +19,7 @@ namespace Assignmen_PRN232__.Repositories
         {
             var query = FindAll();
 
-            // 🔍 Search theo Keyword
+            
             if (!string.IsNullOrWhiteSpace(searchDto.Keyword))
             {
                 var keyword = searchDto.Keyword.Trim();
@@ -28,7 +28,7 @@ namespace Assignmen_PRN232__.Repositories
                     x.AccountEmail.Contains(keyword));
             }
 
-            // 🔍 Filter theo Role
+            
             if (searchDto.AccountRole.HasValue && searchDto.AccountRole >= 0)
             {
                 query = query.Where(x => x.AccountRole == searchDto.AccountRole);
@@ -67,7 +67,7 @@ namespace Assignmen_PRN232__.Repositories
             return await ExistsAsync(x => x.AccountEmail == email && x.AccountId != excludeAccountId);
         }
 
-        // Explicit implementation cho short GetById
+        
         public Task<SystemAccount?> GetByIdAsync(short id) => GetByIdAsync<short>(id);
     }
 }

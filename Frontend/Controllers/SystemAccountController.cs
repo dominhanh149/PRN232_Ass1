@@ -20,7 +20,8 @@ namespace Frontend.Controllers
             {
                 PageIndex = dto.PageIndex > 0 ? dto.PageIndex : 1,
                 PageSize = dto.PageSize > 0 ? dto.PageSize : 10,
-                Keyword = dto.Keyword
+                Keyword = dto.Keyword,
+                AccountRole = dto.AccountRole
             };
 
             var result = await _systemAccountService.GetListPagingAsync(searchDto);
@@ -29,6 +30,7 @@ namespace Frontend.Controllers
             ViewBag.CurrentPage = searchDto.PageIndex;
             ViewBag.PageSize = searchDto.PageSize;
             ViewBag.Keyword = searchDto.Keyword;
+            ViewBag.AccountRole = searchDto.AccountRole;
             ViewBag.TotalPages = result.TotalPages;
             ViewBag.TotalRecords = result.TotalRecords;
 
