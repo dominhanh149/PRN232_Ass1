@@ -18,22 +18,7 @@ namespace Assignmen_PRN232__.Dto
 
     public class SystemAccountSaveDto
     {
-        public short AccountId { get; set; }
 
-        [Required(ErrorMessage = "Account name is required")]
-        [StringLength(100, ErrorMessage = "Account name cannot exceed 100 characters")]
-        public string? AccountName { get; set; }
-
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email format")]
-        [StringLength(100, ErrorMessage = "Email cannot exceed 100 characters")]
-        public string? AccountEmail { get; set; }
-
-        [Required(ErrorMessage = "Role is required")]
-        public int? AccountRole { get; set; }
-
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be between 6 and 100 characters")]
-        public string? AccountPassword { get; set; }
     }
 
     public class SystemAccountLoginDto
