@@ -2,9 +2,11 @@ namespace Assignmen_PRN232_1.DTOs.Common
 {
     public class BaseSearchDto
     {
-        public string? Keyword { get; set; }
-        public bool? Status { get; set; }
-        public int PageIndex { get; set; } = 1;
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
+        public string? SortBy { get; set; }
+        public string SortDirection { get; set; } = "asc";
+        public int Skip => (PageNumber - 1) * PageSize;
+
     }
 }

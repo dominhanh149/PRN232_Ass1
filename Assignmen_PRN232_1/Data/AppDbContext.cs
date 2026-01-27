@@ -25,7 +25,7 @@ public partial class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https:
-        => optionsBuilder.UseSqlServer("Server=Manh\\SQLEXPRESS;uid=sa;password=123;database=FUNewsManagement;Encrypt=True;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-VAL67QL\\MSSQLSERVER01;uid=sa;password=123;database=FUNewsManagement;Encrypt=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
