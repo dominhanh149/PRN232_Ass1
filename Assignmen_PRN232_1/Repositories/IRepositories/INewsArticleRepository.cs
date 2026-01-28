@@ -6,16 +6,14 @@ namespace Assignmen_PRN232__.Repositories.IRepositories
 {
     public interface INewsArticleRepository
     {
-        Task<NewsArticle?> GetByIdAsync(string id);
         Task<IEnumerable<NewsArticle>> GetAllAsync();
-        Task<IEnumerable<NewsArticle>> GetAllWithDetailsAsync();
-        Task<NewsArticle?> GetByIdWithDetailsAsync(string id);
+        Task<PagingDto<NewsArticle>> GetListPagingAsync(NewsArticleSearchDto searchDto);
+        Task<NewsArticle?> GetByIdAsync<TKey>(TKey id) where TKey : notnull;
+        Task<NewsArticle?> GetByIdAsync(string id);
         Task<NewsArticle> AddAsync(NewsArticle newsArticle);
         Task UpdateAsync(NewsArticle newsArticle);
         Task DeleteAsync(NewsArticle newsArticle);
-        Task<bool> ExistsAsync(string id);
-        Task<IEnumerable<NewsArticle>> SearchAsync(string? keyword, short? categoryId, DateTime? fromDate, DateTime? toDate);
-        Task<Dictionary<string, int>> GetStatisticsByCategoryAsync();
+        Task<bool> ExistsByIdAsync(string newsArticleId);
         Task<int> SaveChangesAsync();
     }
 }

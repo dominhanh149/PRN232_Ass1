@@ -24,12 +24,12 @@ namespace UsersApp.Extensions
             services.AddScoped<ICategoryService, CategoryService>();
 
 
-            //services.AddTransient<INewsArticleRepository, NewsArticleRepository>();
-            //services.AddScoped<INewsArticleService, NewsArticleService>();
+            services.AddTransient<INewsArticleRepository, NewsArticleRepository>();
+            services.AddScoped<INewsArticleService, NewsArticleService>();
 
 
-            //services.AddTransient<ISystemAccountRepository, SystemAccountRepository>();
-            //services.AddScoped<ISystemAccountService, SystemAccountService>();
+            services.AddTransient<ISystemAccountRepository, SystemAccountRepository>();
+            services.AddScoped<ISystemAccountService, SystemAccountService>();
 
 
             //services.AddTransient<IReportRepository, ReportRepository>();

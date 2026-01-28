@@ -7,6 +7,7 @@ namespace Assignmen_PRN232_1.DTOs.Common
         public string? SortBy { get; set; }
         public string SortDirection { get; set; } = "asc";
         public int Skip => (PageNumber - 1) * PageSize;
+        public bool? Status { get; set; }
 
     }
 }

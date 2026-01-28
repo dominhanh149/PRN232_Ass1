@@ -6,6 +6,8 @@ namespace Assignmen_PRN232__.Dto.Common
         public string? Message { get; set; }
         public T? Data { get; set; }
         public List<string>? Errors { get; set; }
+        public int StatusCode { get; set; }
+
 
         public ApiResponse()
         {
