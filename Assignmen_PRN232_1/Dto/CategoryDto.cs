@@ -4,18 +4,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Assignmen_PRN232__.Dto
 {
-    public class CategoryDto
-    {
-        public short CategoryID { get; set; }
-        public string CategoryName { get; set; } = null!;
-        public string CategoryDesciption { get; set; } = null!;
-        public short? ParentCategoryID { get; set; }
-        public string? ParentCategoryName { get; set; }
-        public bool? IsActive { get; set; }
-        public int ArticleCount { get; set; } // Number of articles in this category
-    }
-
-    // DTO for creating category
     public class CreateCategoryDto
     {
         [Required(ErrorMessage = "Category name is required")]
@@ -31,7 +19,7 @@ namespace Assignmen_PRN232__.Dto
         public bool IsActive { get; set; } = true;
     }
 
-    // DTO for updating category
+    // DTO for updating existing category
     public class UpdateCategoryDto
     {
         [Required(ErrorMessage = "Category ID is required")]
@@ -50,21 +38,53 @@ namespace Assignmen_PRN232__.Dto
         public bool IsActive { get; set; }
     }
 
-    // DTO for category search
-    public class SearchCategoryDto : BaseSearchDto
+    // DTO for category response with article count
+    public class CategoryResponseDto
     {
-        public string? CategoryName { get; set; }
-        public string? CategoryDesciption { get; set; }
-        public bool? IsActive { get; set; }
+        public short CategoryID { get; set; }
+        public string CategoryName { get; set; } = null!;
+        public string CategoryDesciption { get; set; } = null!;
+        public short? ParentCategoryID { get; set; }
+        public string? ParentCategoryName { get; set; }
+        public bool IsActive { get; set; }
+        public int ArticleCount { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 
-    // DTO for toggling category status
+    // DTO for simple category info (for dropdown, etc.)
+    public class CategorySimpleDto
+    {
+        public short CategoryID { get; set; }
+        public string CategoryName { get; set; } = null!;
+        public bool IsActive { get; set; }
+    }
+
+    // DTO for search parameters
+    public class CategorySearchDto : BaseSearchDto
+    {
+        public string? SearchTerm { get; set; }
+        public bool? IsActive { get; set; }
+        public short? ParentCategoryID { get; set; }
+    }
+
+    // DTO for toggle active status
     public class ToggleCategoryStatusDto
     {
-        [Required(ErrorMessage = "Category ID is required")]
+        [Required]
         public short CategoryID { get; set; }
 
-        [Required(ErrorMessage = "IsActive status is required")]
+        [Required]
         public bool IsActive { get; set; }
+    }
+
+    // DTO for category with children
+    public class CategoryWithChildrenDto
+    {
+        public short CategoryID { get; set; }
+        public string CategoryName { get; set; } = null!;
+        public string CategoryDesciption { get; set; } = null!;
+        public bool IsActive { get; set; }
+        public int ArticleCount { get; set; }
+        public List<CategorySimpleDto> ChildCategories { get; set; } = new();
     }
 }

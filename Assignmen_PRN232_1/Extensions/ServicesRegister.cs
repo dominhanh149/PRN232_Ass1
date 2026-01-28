@@ -20,8 +20,8 @@ namespace UsersApp.Extensions
             services.AddScoped<ITagService, TagService>();
 
 
-            //services.AddTransient<ICategoryRepository, CategoryRepository>();
-            //services.AddScoped<ICategoryService, CategoryService>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
 
             //services.AddTransient<INewsArticleRepository, NewsArticleRepository>();

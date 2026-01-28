@@ -87,15 +87,3 @@ namespace Assignmen_PRN232__.Dto.Common
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
