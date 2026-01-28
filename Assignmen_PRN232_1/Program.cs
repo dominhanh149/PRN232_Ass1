@@ -1,4 +1,4 @@
-
+﻿
 using Assignmen_PRN232__.Dto;
 using Assignmen_PRN232__.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,13 +15,15 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddPolicy("FE", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("https://localhost:7024")  // PORT FE của bạn
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
+
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -39,7 +41,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
-
+        options.Cookie.SameSite = SameSiteMode.None;         // 🔥 cross-site cookie
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         options.Events.OnRedirectToLogin = ctx =>
         {
             ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
@@ -67,7 +70,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowFrontend");
+app.UseCors("FE");
 
 app.UseAuthentication();
 app.UseAuthorization();

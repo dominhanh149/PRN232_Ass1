@@ -89,5 +89,11 @@ namespace Assignmen_PRN232_1.Controllers.Api
 
             return Ok(response);
         }
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Ok(new { success = true });
+        }
     }
 }

@@ -32,8 +32,8 @@ namespace UsersApp.Extensions
             services.AddScoped<ISystemAccountService, SystemAccountService>();
 
 
-            //services.AddTransient<IReportRepository, ReportRepository>();
-            //services.AddScoped<IReportService, ReportService>();
+            services.AddTransient<IReportRepository, ReportRepository>();
+            services.AddScoped<IReportService, ReportService>();
         }
     }
 }

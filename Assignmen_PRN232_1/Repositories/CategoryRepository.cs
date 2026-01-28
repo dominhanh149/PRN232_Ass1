@@ -19,7 +19,7 @@ namespace Assignmen_PRN232__.Repositories
 
         public async Task<Category?> GetByIdAsync(short id)
         {
-            return await FindByCondition(c => c.CategoryId == id, trackChanges: false)
+            return await FindByCondition(c => c.CategoryId == id, trackChanges: true)
                 .Include(c => c.ParentCategory)
                 .FirstOrDefaultAsync();
         }
@@ -41,7 +41,6 @@ namespace Assignmen_PRN232__.Repositories
 
         public async Task UpdateAsync(Category category)
         {
-            await base.UpdateAsync(category);
             await SaveChangesAsync();
         }
 
