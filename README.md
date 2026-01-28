@@ -24,12 +24,12 @@ Backend sẽ chạy tại: `https://localhost:7053`
 cd Frontend
 dotnet run
 ```
-Frontend sẽ chạy tại: `https://localhost:7001`
+Frontend sẽ chạy tại: `https://localhost:7024`
 
 ### 5. Đăng nhập
 **Default Admin Account:**
-- Email: admin@funews.com
-- Password: admin123
+- Email: admin@FUNewsManagementSystem.org
+- Password: @@abc123@@
 - Role: Admin
 
 ## Danh sách API
@@ -45,11 +45,12 @@ Frontend sẽ chạy tại: `https://localhost:7001`
 | POST | `/create-or-edit` | Admin | Tạo hoặc cập nhật account |
 | DELETE | `/{id}` | Admin | Xóa account |
 | POST | `/login` | Public | Đăng nhập |
+| POST | `/logout` | Public | Đăng xuất |
 
 **Query Parameters (GET /):**
 - `PageIndex`: Trang hiện tại
 - `PageSize`: Số bản ghi mỗi trang
-- `Keyword`: Tìm kiếm theo tên hoặc email
+- `Items`: Tìm kiếm theo tên hoặc email
 - `AccountRole`: Lọc theo role (0=Admin, 1=Staff, 2=Lecturer)
 
 ---
@@ -57,17 +58,20 @@ Frontend sẽ chạy tại: `https://localhost:7001`
 ### NewsArticles API
 **Base URL:** `/api/newsarticles`
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/` | Admin,Staff | Lấy danh sách bài viết (phân trang) |
-| GET | `/public` | Public | Lấy bài viết công khai |
-| GET | `/all` | Admin,Staff | Lấy tất cả bài viết |
-| GET | `/{id}` | Admin,Staff | Lấy bài viết theo ID |
-| POST | `/create-or-edit` | Admin,Staff | Tạo hoặc cập nhật bài viết |
-| POST | `/{id}/duplicate` | Admin,Staff | Nhân bản bài viết |
-| DELETE | `/{id}` | Admin,Staff | Xóa bài viết |
-| POST | `/{id}/tags/{tagId}` | Admin,Staff | Thêm tag vào bài viết |
-| DELETE | `/{id}/tags/{tagId}` | Admin,Staff | Xóa tag khỏi bài viết |
+| Method | Endpoint             | Auth   | Description                                                |
+| ------ | -------------------- | ------ | ---------------------------------------------------------- |
+| GET    | `/`                  | Staff  | Lấy danh sách bài viết (phân trang)                        |
+| POST   | `/paging`            | Staff  | Lấy danh sách bài viết (phân trang) – gửi filter bằng body |
+| POST   | `/public/paging`     | Public | Lấy bài viết công khai (phân trang)                        |
+| GET    | `/{id}`              | Public | Lấy bài viết theo ID                                       |
+| POST   | `/`                  | Staff  | Tạo bài viết (set `CreatedById` = current user)            |
+| PUT    | `/{id}`              | Staff  | Cập nhật bài viết (set `UpdatedById`, `ModifiedDate`)      |
+| DELETE | `/{id}`              | Staff  | Xóa bài viết                                               |
+| POST   | `/{id}/duplicate`    | Staff  | Nhân bản bài viết                                          |
+| POST   | `/{id}/tags/{tagId}` | Staff  | Thêm tag vào bài viết                                      |
+| DELETE | `/{id}/tags/{tagId}` | Staff  | Xóa tag khỏi bài viết                                      |
+| PUT    | `/{id}/tags`         | Staff  | Set nhiều tag cho bài viết (1 request)                     |
+|
 
 **Query Parameters (GET /):**
 - `PageIndex`: Trang hiện tại
@@ -85,13 +89,21 @@ Frontend sẽ chạy tại: `https://localhost:7001`
 ### Categories API
 **Base URL:** `/api/categories`
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/` | Staff | Lấy danh sách category (phân trang) |
-| GET | `/all` | Public | Lấy tất cả category |
-| GET | `/{id}` | Staff | Lấy category theo ID |
-| POST | `/create-or-edit` | Staff | Tạo hoặc cập nhật category |
-| DELETE | `/{id}` | Staff | Xóa category |
+| Method | Endpoint               | Auth         | Description                                                    |
+| ------ | ---------------------- | ------------ | -------------------------------------------------------------- |
+| GET    | `/`                    | Staff, Admin | Lấy tất cả categories (kèm article count)                      |
+| GET    | `/{id}`                | Staff, Admin | Lấy category theo ID (kèm article count)                       |
+| POST   | `/search`              | Staff, Admin | Tìm kiếm categories (phân trang + filter)                      |
+| GET    | `/active`              | Public       | Lấy tất cả category đang active (dùng cho dropdown, public UI) |
+| GET    | `/parents`             | Staff, Admin | Lấy danh sách parent categories (không có parent)              |
+| GET    | `/{parentId}/children` | Staff, Admin | Lấy danh sách child categories của 1 parent                    |
+| GET    | `/{id}/with-children`  | Staff, Admin | Lấy category kèm toàn bộ children                              |
+| GET    | `/{id}/article-count`  | Staff, Admin | Lấy số lượng bài viết trong category                           |
+| POST   | `/`                    | Staff, Admin | Tạo category mới                                               |
+| PUT    | `/{id}`                | Staff, Admin | Cập nhật category theo ID                                      |
+| DELETE | `/{id}`                | Staff, Admin | Xóa category (không xóa nếu có articles/children)              |
+| PATCH  | `/toggle-status`       | Staff, Admin | Bật/tắt trạng thái active của category                         |
+
 
 **Query Parameters (GET /):**
 - `PageIndex`: Trang hiện tại
@@ -103,13 +115,19 @@ Frontend sẽ chạy tại: `https://localhost:7001`
 ### Tags API
 **Base URL:** `/api/tags`
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/` | Staff | Lấy danh sách tag (phân trang) |
-| GET | `/all` | Public | Lấy tất cả tag |
-| GET | `/{id}` | Staff | Lấy tag theo ID |
-| POST | `/create-or-edit` | Staff | Tạo hoặc cập nhật tag |
-| DELETE | `/{id}` | Staff | Xóa tag |
+| Method | Endpoint                  | Auth         | Description                                             |
+| ------ | ------------------------- | ------------ | ------------------------------------------------------- |
+| GET    | `/`                       | Staff, Admin | Lấy tất cả tags                                         |
+| GET    | `/{id}`                   | Staff, Admin | Lấy tag theo ID                                         |
+| GET    | `/{id}/articles`          | Staff, Admin | Lấy tag kèm danh sách bài viết liên quan                |
+| POST   | `/`                       | Staff, Admin | Tạo tag mới                                             |
+| PUT    | `/{id}`                   | Staff, Admin | Cập nhật tag theo ID                                    |
+| DELETE | `/{id}`                   | Staff, Admin | Xóa tag theo ID                                         |
+| POST   | `/search`                 | Staff, Admin | Search tags (phân trang + filter)                       |
+| GET    | `/{id}/articles-list`     | Staff, Admin | Lấy danh sách bài viết theo tag ID (dạng list đơn giản) |
+| GET    | `/by-article/{articleId}` | Staff, Admin | Lấy danh sách tags theo article ID                      |
+| GET    | `/{id}/exists`            | Staff, Admin | Kiểm tra tag có tồn tại không                           |
+| GET    | `/name-available`         | Staff, Admin | Kiểm tra tên tag có khả dụng không (unique)             |
 
 **Query Parameters (GET /):**
 - `PageIndex`: Trang hiện tại
@@ -155,19 +173,35 @@ Frontend sẽ chạy tại: `https://localhost:7001`
 
 ```
 PRN232_Ass1/
-├── Assignmen_PRN232_1/          # Backend API
-│   ├── Controllers/             # API Controllers
-│   ├── Services/                # Business Logic
-│   ├── Repositories/            # Data Access
-│   ├── Models/                  # Entity Models
-│   ├── Dto/                     # Data Transfer Objects
-│   └── Data/                    # DbContext
-│
-└── Frontend/                    # Frontend MVC
-    ├── Controllers/             # MVC Controllers
-    ├── Views/                   # Razor Views
-    ├── Services/                # API Client Services
-    └── wwwroot/                 # Static files
+├── Assignmen_PRN232_1/                    # Backend API (.NET Web API)
+│   ├── Controllers/                       # API Controllers
+│   ├── Data/
+│   │   └── AppDbContext.cs                # EF Core DbContext
+│   ├── Dto/                               # Data Transfer Objects
+│   ├── Enums/
+│   │   ├── AccountRole.cs                 # Role enum (Admin, Staff, Lecturer)
+│   │   └── ApiStatusCode.cs               # API status codes
+│   ├── Extensions/
+│   │   └── ServicesRegister.cs            # Dependency Injection registration
+│   ├── Models/                            # Entity Models
+│   ├── Repositories/                      # Repository + UnitOfWork
+│   ├── Services/                          # Business Logic Layer
+│   ├── appsettings.json                   # Backend configuration
+│   ├── Program.cs                         # Application entry point
+│   └── Assignmen_PRN232_1.http             # API testing file
+└── DoMinhAnh_SE1884_A01_FE/               # Frontend MVC (.NET MVC)
+    ├── Controllers/                       # MVC Controllers
+    ├── Models/                            # ViewModels
+    ├── Views/                             # Razor Views
+    ├── wwwroot/                           # Static files
+    │   ├── css/                           # Stylesheets
+    │   ├── js/                            # Client-side scripts
+    │   ├── lib/                           # Client libraries
+    │   └── favicon.ico
+    ├── appsettings.json                   # Frontend configuration (API URL)
+    └── Program.cs                         # MVC startup & cookie auth
+
+
 ```
 
 ---
