@@ -1,4 +1,4 @@
-
+﻿
 using Assignmen_PRN232__.Dto;
 using Assignmen_PRN232__.Models;
 using Assignmen_PRN232__.Repositories.IRepositories;
@@ -63,21 +63,16 @@ namespace Assignmen_PRN232__.Repositories
 
         public async Task<Tag> CreateTagAsync(CreateTagDto createTagDto)
         {
-            // Check if tag name already exists
+            // 1) Check TagName duplicate
             if (await TagNameExistsAsync(createTagDto.TagName))
-            {
                 throw new InvalidOperationException($"Tag name '{createTagDto.TagName}' already exists.");
-            }
 
-            // Check if TagID already exists
-            if (await TagExistsAsync(createTagDto.TagID))
-            {
-                throw new InvalidOperationException($"Tag ID '{createTagDto.TagID}' already exists.");
-            }
+            // ✅ 2) Generate new TagID
+            var newId = await GenerateTagIdAsync();
 
             var tag = new Tag
             {
-                TagId = createTagDto.TagID,
+                TagId = newId,
                 TagName = createTagDto.TagName,
                 Note = createTagDto.Note
             };
@@ -87,6 +82,16 @@ namespace Assignmen_PRN232__.Repositories
 
             return tag;
         }
+
+        private async Task<int> GenerateTagIdAsync()
+        {
+            int max = await _dbContext.Tags
+                .Select(t => (int?)t.TagId)
+                .MaxAsync() ?? 0;
+
+            return max + 1;
+        }
+
 
         public async Task<bool> UpdateTagAsync(UpdateTagDto updateTagDto)
         {

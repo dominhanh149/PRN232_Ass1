@@ -8,7 +8,6 @@ namespace Assignmen_PRN232__.Dto
     /// </summary>
     public class CreateTagDto
     {
-        [Required(ErrorMessage = "Tag ID is required")]
         public int TagID { get; set; }
 
         [Required(ErrorMessage = "Tag name is required")]
